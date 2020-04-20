@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="1.studio.boardgamearena.com" id="db2996ec-c5c7-40ca-936b-9756e5c5f08e" port="22" customName="BGA" nameFormat="CUSTOM" username="Snapper" />
+    </configs>
+  </component>
+</project>
