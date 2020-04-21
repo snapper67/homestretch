@@ -1,15 +1,15 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Homestrech implementation : © <Your name here> <Your email address here>
+ * Homestretch implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * homestrech.css
+ * homestretch.css
  *
- * Homestrech stylesheet
+ * Homestretch stylesheet
  *
  */
 
@@ -17,8 +17,8 @@
     This is the CSS stylesheet of your game User Interface.
 
     Styles defined on this file will be applied to the HTML elements you define in your
-    HTML template (homestrech_homestrech.tpl), and to HTML elements you create dynamically
-    (in homestrech.js).
+    HTML template (homestretch_homestretch.tpl), and to HTML elements you create dynamically
+    (in homestretch.js).
 
     Usually, you are using CSS to:
 
@@ -120,4 +120,94 @@
     width: 30px;
     height: 30px;
     background-repeat: none;
+}
+
+.startingGate {
+    position: absolute;
+    bottom: 40px;
+    left: 510px;
+    height: 170px;
+    width: 60px;
+}
+.startingGate div {
+    width: 30px;
+    height: 15px;
+}
+.blue_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: 0px 0px;
+}
+.green_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -30px 0px;
+}
+.opal_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -60px 0px;
+}
+.orange_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -90px 0px;
+}
+.white_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -120px 0px;
+}
+.black_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -150px 0px;
+}
+.red_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -180px 0px;
+}
+.yellow_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -210px 0px;
+}
+.grey_meeple {
+    background-image: url('img/30_30_meeple.png');
+    background-position: -240px 0px;
+}
+.purple_meeple {
+    background-image: url('img/30_30_tokens.png');
+    background-position: -270px 0px;
+}
+
+
+.dice
+{
+    float: left;
+    width: 70px;
+    height: 70px;
+    margin-left: 6px;
+    background-image: url('img/Dices.png');
+    cursor: pointer;
+}
+
+
+.dice_0 { background-position:-0px;  }
+.dice_1 { background-position:-71px;  }
+.dice_2 { background-position:-142px;  }
+.dice_3 { background-position:-213px;  }
+.dice_4 { background-position:-284px;  }
+.dice_5 { background-position:-355px;  }
+
+.dice_select
+{
+    /* outline: 3px red solid; */
+    border : 3px red solid;
+}
+
+.dice_select::after {
+    position: relative;
+    display: block;
+    content: "";
+    width: 20px;
+    height: 20px;
+    background-image: url(img/cross.png);
+    background-size: cover;
+    -webkit-background-size: cover;
+    top: -12px;
+    left: 62px;
 }

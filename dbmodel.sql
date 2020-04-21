@@ -1,7 +1,7 @@
 
 -- ------
 -- BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
--- Homestrech implementation : © <Your name here> <Your email address here>
+-- Homestretch implementation : © <Your name here> <Your email address here>
 -- 
 -- This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
 -- See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -56,3 +56,10 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`token_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `position` (
+   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+   `horse` tinyint(2) unsigned NOT NULL,
+   `progress` tinyint(2) unsigned NOT NULL,
+   `stone_color` varchar(8) NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

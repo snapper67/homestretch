@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Homestrech implementation : © <Your name here> <Your email address here>
+ * Homestretch implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -10,7 +10,7 @@
  * 
  * states.inc.php
  *
- * Homestrech game states description
+ * Homestretch game states description
  *
  */
 
@@ -63,13 +63,22 @@ $machinestates = array(
     
     // Note: ID=2 => your first state
 
+//    2 => array(
+//    		"name" => "cardDraft",
+//    		"description" => clienttranslate('${actplayer} must choose a card'),
+//    		"descriptionmyturn" => clienttranslate('${you} must choose a card'),
+//    		"type" => "multipleactiveplayer",
+//    		"possibleactions" => array( "takeCard", "pass" ),
+//    		"transitions" => array( "takeCard" => 2, "pass" => 2 )
+//    ),
+
     2 => array(
-    		"name" => "playerTurn",
-    		"description" => clienttranslate('${actplayer} must play a card or pass'),
-    		"descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-    		"type" => "activeplayer",
-    		"possibleactions" => array( "playCard", "pass" ),
-    		"transitions" => array( "playCard" => 2, "pass" => 2 )
+        "name" => "playerTurn",
+        "description" => clienttranslate('${actplayer} must play a card or pass'),
+        "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
+        "type" => "activeplayer",
+        "possibleactions" => array( "rollDice", "pass" ),
+        "transitions" => array( "rollDice" => 3, "pass" => 3 )
     ),
     
 /*

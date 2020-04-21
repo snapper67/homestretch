@@ -2,7 +2,7 @@
  /**
   *------
   * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
-  * Homestrech implementation : © <Your name here> <Your email address here>
+  * Homestretch implementation : © <Your name here> <Your email address here>
   * 
   * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
   * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -20,7 +20,7 @@
 require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
 
-class Homestrech extends Table
+class Homestretch extends Table
 {
 	function __construct( )
 	{
@@ -32,7 +32,9 @@ class Homestrech extends Table
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
         
-        self::initGameStateLabels( array( 
+        self::initGameStateLabels( array(
+            "dice_value_1" => 10,
+            "dice_value_2" => 11,
             //    "my_first_global_variable" => 10,
             //    "my_second_global_variable" => 11,
             //      ...
@@ -86,10 +88,20 @@ class Homestrech extends Table
         // (note: statistics used in this file must be defined in your stats.inc.php file)
         //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
         //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
-        self::initStat( 'player', 'player_money', 0 );  // Init a player statistics (for all players)
+//        self::initStat( 'player', 'player_money', 0 );  // Init a player statistics (for all players)
         // TODO: setup the initial game situation here
-       
 
+        self::setGameStateInitialValue( 'dice_value_1', 1 );
+        self::setGameStateInitialValue( 'dice_value_2', 1 );
+
+        // Insert (empty) intersections into database
+        $sql = "INSERT INTO position (horse, progress) VALUES ";
+        $values = array();
+        for ($x = 2; $x < 12; $x++) {
+            $values[] = "($x, 0)";
+        }
+        $sql .= implode( $values, ',' );
+        self::DbQuery( $sql );
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 

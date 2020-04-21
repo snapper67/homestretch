@@ -3,7 +3,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Homestrech implementation : © <Your name here> <Your email address here>
+ * Homestretch implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -11,7 +11,7 @@
  *
  * stats.inc.php
  *
- * Homestrech game statistics description
+ * Homestretch game statistics description
  *
  */
 
@@ -55,9 +55,9 @@ $stats_type = array(
         "turns_number" => array("id"=> 10,
                     "name" => totranslate("Number of turns"),
                     "type" => "int" ),
-        "player_money" => array(   "id"=> 10,
-            "name" => totranslate("player money"),
-            "type" => "int" ),
+//        "player_money" => array(   "id"=> 11,
+//            "name" => totranslate("player money"),
+//            "type" => "int" ),
 
 /*
         Examples:
@@ -72,27 +72,4 @@ $stats_type = array(
                                 "type" => "float" )
 */  
     ),
-    
-    // Statistics existing for each player
-    "player" => array(
-
-        "turns_number" => array("id"=> 10,
-                    "name" => totranslate("Number of turns"),
-                    "type" => "int" ),
-    
-/*
-        Examples:    
-        
-        
-        "player_teststat1" => array(   "id"=> 10,
-                                "name" => totranslate("player test stat 1"), 
-                                "type" => "int" ),
-                                
-        "player_teststat2" => array(   "id"=> 11,
-                                "name" => totranslate("player test stat 2"), 
-                                "type" => "float" )
-
-*/    
-    )
-
 );

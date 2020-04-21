@@ -3,7 +3,7 @@
 <!-- 
 --------
 -- BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
--- Homestrech implementation : © <Your name here> <Your email address here>
+-- Homestretch implementation : © <Your name here> <Your email address here>
 -- 
 -- This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
 -- See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -25,7 +25,22 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
+<div id="diceTable">
 
+    <div class="diceblock" >
+        <!-- BEGIN dice -->
+        <div class="dice_content" id="content_{DICE_VALUE}" >
+
+            <div class="dice dice_0" id="dice_{DICE_VALUE}" ></div>
+
+        </div>
+        <!-- END dice -->
+        <div id="dice_btn_content" >
+        </div>
+
+    </div>
+
+</div>
 <div id="board">
     <!-- BEGIN square -->
     <div id="square_{X}_{Y}" class="square" style="left: {LEFT}px; top: {TOP}px;"></div>
@@ -41,6 +56,20 @@
     </div>
 </div>
 
+<div class="startingGate">
+    <div class="two black_meeple"></div>
+    <div class="three black_meeple"></div>
+    <div class="four black_meeple"></div>
+    <div class="five black_meeple"></div>
+    <div class="six black_meeple"></div>
+    <div class="seven black_meeple"></div>
+    <div class="eight black_meeple"></div>
+    <div class="nine black_meeple"></div>
+    <div class="ten black_meeple"></div>
+    <div class="eleven black_meeple"></div>
+    <div class="twelve black_meeple"></div>
+</div>
+
 
 <script type="text/javascript">
 
@@ -51,7 +80,7 @@
 var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
 
 */
-
+var jstpl_dice = '<div class="dice ${dClass}" id="dice_${id}" >\ </div>';
 </script>  
 
 {OVERALL_GAME_FOOTER}

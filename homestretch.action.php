@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Homestrech implementation : © <Your name here> <Your email address here>
+ * Homestretch implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on https://boardgamearena.com.
  * See http://en.doc.boardgamearena.com/Studio for more information.
@@ -10,7 +10,7 @@
  * 
  * homestretch.action.php
  *
- * Homestrech main action entry point
+ * Homestretch main action entry point
  *
  *
  * In this file, you are describing all the methods that can be called from your

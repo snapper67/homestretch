@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * Homestrech implementation : © <Your name here> <Your email address here>
+ * Homestretch implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -9,7 +9,7 @@
  *
  * homestretch.js
  *
- * Homestrech user interface script
+ * Homestretch user interface script
  * 
  * In this file, you are describing the logic of your user interface, in Javascript language.
  *
@@ -57,7 +57,12 @@ function (dojo, declare) {
             }
             
             // TODO: Set up your game interface here, according to "gamedatas"
-            
+            // dice on table
+            for( var i in this.gamedatas.Dice )
+            {
+                var value = this.gamedatas.Dice[i];
+                this.UpdateDice( i, value );
+            }
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -158,7 +163,23 @@ function (dojo, declare) {
         
         */
 
+        UpdateDice: function( DiceId, value )
+        {
+            //var x =  (value-1) *71;
+            var sDiceClass =  "dice_"+(value-1).toString();
 
+            dojo.removeClass( 'dice_'+DiceId, ['dice_0','dice_1','dice_2','dice_3','dice_4','dice_5'] );
+            dojo.addClass( 'dice_'+DiceId, sDiceClass );
+
+            //alert( "nX : " + x + " ## " + DiceId + " ## " + value );
+            // player_id => direction
+            //dojo.empty( 'content_'+DiceId );
+            /*   dojo.place(
+                   this.format_block( 'jstpl_dice', {
+                       id : DiceId,
+                       dClass: sDiceClass
+                   } ), 'content_'+DiceId );*/
+        },
         ///////////////////////////////////////////////////
         //// Player's action
         
