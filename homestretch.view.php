@@ -38,7 +38,13 @@
         $players_nbr = count( $players );
 
         /*********** Place your code below:  ************/
-
+        $this->tpl['DICE_TITLE'] = self::_("Dices");
+        $this->page->begin_block( "homestretch_homestretch", "dice" );
+        for( $i=1; $i<=2; $i++ )
+        {
+            $x = $i*70;
+            $this->page->insert_block( "dice", array( "DICE_VALUE" => $i, "x"=>$x ) );
+        }
 
         /*
         

@@ -73,8 +73,15 @@
     background-image: url('img/board.png');
     position: relative;
     margin: auto;
+    display: inline-block;
 }
-
+.startingGate {
+    position: absolute;
+    bottom: 40px;
+    left: 350px;
+    height: 170px;
+    width: 60px;
+}
 
 .blue_token {
     background-image: url('img/30_30_tokens.png');
@@ -121,14 +128,6 @@
     height: 30px;
     background-repeat: none;
 }
-
-.startingGate {
-    position: absolute;
-    bottom: 40px;
-    left: 510px;
-    height: 170px;
-    width: 60px;
-}
 .startingGate div {
     width: 30px;
     height: 15px;
@@ -174,7 +173,9 @@
     background-position: -270px 0px;
 }
 
-
+#diceTable {
+   float: right;
+}
 .dice
 {
     float: left;
@@ -193,21 +194,21 @@
 .dice_4 { background-position:-284px;  }
 .dice_5 { background-position:-355px;  }
 
-.dice_select
-{
-    /* outline: 3px red solid; */
-    border : 3px red solid;
-}
+/*.dice_select*/
+/*{*/
+/*    !* outline: 3px red solid; *!*/
+/*    border : 3px red solid;*/
+/*}*/
 
-.dice_select::after {
-    position: relative;
-    display: block;
-    content: "";
-    width: 20px;
-    height: 20px;
-    background-image: url(img/cross.png);
-    background-size: cover;
-    -webkit-background-size: cover;
-    top: -12px;
-    left: 62px;
-}
+/*.dice_select::after {*/
+/*    position: relative;*/
+/*    display: block;*/
+/*    content: "";*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*    background-image: url(img/cross.png);*/
+/*    background-size: cover;*/
+/*    -webkit-background-size: cover;*/
+/*    top: -12px;*/
+/*    left: 62px;*/
+/*}*/

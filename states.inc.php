@@ -58,7 +58,7 @@ $machinestates = array(
         "description" => "",
         "type" => "manager",
         "action" => "stGameSetup",
-        "transitions" => array( "" => 2 )
+        "transitions" => array( "" => 5 )
     ),
     
     // Note: ID=2 => your first state
@@ -71,38 +71,61 @@ $machinestates = array(
 //    		"possibleactions" => array( "takeCard", "pass" ),
 //    		"transitions" => array( "takeCard" => 2, "pass" => 2 )
 //    ),
-
-    2 => array(
-        "name" => "playerTurn",
-        "description" => clienttranslate('${actplayer} must play a card or pass'),
-        "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-        "type" => "activeplayer",
-        "possibleactions" => array( "rollDice", "pass" ),
-        "transitions" => array( "rollDice" => 3, "pass" => 3 )
-    ),
-    
-/*
-    Examples:
-    
-    2 => array(
-        "name" => "nextPlayer",
-        "description" => '',
+    5 => array(
+        "name" => "newDice",
+        "description" => "",
         "type" => "game",
-        "action" => "stNextPlayer",
-        "updateGameProgression" => true,   
-        "transitions" => array( "endGame" => 99, "nextPlayer" => 10 )
+        "action" => "stNewDice",
+        "updateGameProgression" => true,
+        "transitions" => array( "" => 10 )
     ),
-    
     10 => array(
         "name" => "playerTurn",
-        "description" => clienttranslate('${actplayer} must play a card or pass'),
-        "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
+        "description" => clienttranslate('${actplayer} must roll the dice'),
+        "descriptionmyturn" => clienttranslate('${you} must roll the dice'),
         "type" => "activeplayer",
-        "possibleactions" => array( "playCard", "pass" ),
-        "transitions" => array( "playCard" => 2, "pass" => 2 )
-    ), 
+        "possibleactions" => array( "rollDice" ),
+        "transitions" => array( "rollDice" => 22 )
+    ),
+//    11 => array(
+//        "name" => "playerTurn",
+//        "description" => clienttranslate('${actplayer} must roll the dice'),
+//        "descriptionmyturn" => clienttranslate('${you} must roll the dice'),
+//        "type" => "activeplayer",
+//        "possibleactions" => array( "moveHorse", "reroll" ),
+//        "transitions" => array( "moveHorse" => 22, "reroll" => 22)
+//    ),
+    22 => array(
+        "name" => "checkEnd",
+        "description" => "",
+        "type" => "game",
+        "action" => "stEndCheck",
+        "updateGameProgression" => true,
+        "transitions" => array( "nextplayer" => 10, "endGame" => 99 )
+    ),
 
-*/    
+    /*
+        Examples:
+
+        2 => array(
+            "name" => "nextPlayer",
+            "description" => '',
+            "type" => "game",
+            "action" => "stNextPlayer",
+            "updateGameProgression" => true,
+            "transitions" => array( "endGame" => 99, "nextPlayer" => 10 )
+        ),
+
+        10 => array(
+            "name" => "playerTurn",
+            "description" => clienttranslate('${actplayer} must play a card or pass'),
+            "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
+            "type" => "activeplayer",
+            "possibleactions" => array( "playCard", "pass" ),
+            "transitions" => array( "playCard" => 2, "pass" => 2 )
+        ),
+
+    */
    
     // Final state.
     // Please do not modify (and do not overload action/args methods).

@@ -61,15 +61,60 @@ function (dojo, declare) {
             for( var i in this.gamedatas.Dice )
             {
                 var value = this.gamedatas.Dice[i];
-                this.UpdateDice( i, value );
+                // this.UpdateDice( i, value );
             }
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
-
+            this.UpdateDiceBtn( gamedatas.DiceLaunch );
+            // dojo.query( '.dice' ).connect( 'onclick', this, 'onDice' );
+            dojo.query("#dice_btn").connect(  'onclick', this, 'onDiceRetrive' );
             console.log( "Ending game setup" );
         },
-       
+
+        onDice: function( evt )
+        {
+            //alert( "coco" );
+            evt.preventDefault();
+            dojo.stopEvent( evt );
+
+            if( this.checkAction( 'rollDice' ) )
+            {
+
+            }
+        },
+        onDiceRetrive: function( evt )
+        {
+            evt.preventDefault();
+            dojo.stopEvent( evt );
+
+            if( this.checkAction( 'rollDice' ) )
+            {
+                var dices = dojo.query( '.dice_select' );
+                if( dices.length != 0 )
+                {
+                    var arg = "";
+
+                    for(var i=0; i<dices.length; i++)
+                    {
+                        if( i!=0)
+                            arg += ";";
+                        var subArray = dices[i].id.split('_');
+                        arg += subArray[1];
+                    }
+
+                    this.ajaxcall( "/homestretch/homestretch/roll.html", {
+                        lock: true,
+                        dices: arg
+                    }, this, function( result ) {} );
+                }
+                else
+                {
+                    // Tell player he can't retrive no dice
+                    this.showMessage( _('Please select some dice first'), 'info' );
+                }
+            }
+        },
 
         ///////////////////////////////////////////////////
         //// Game & client states
@@ -168,7 +213,7 @@ function (dojo, declare) {
             //var x =  (value-1) *71;
             var sDiceClass =  "dice_"+(value-1).toString();
 
-            dojo.removeClass( 'dice_'+DiceId, ['dice_0','dice_1','dice_2','dice_3','dice_4','dice_5'] );
+            dojo.removeClass( 'dice_'+DiceId, ['dice_0','dice_1'] );
             dojo.addClass( 'dice_'+DiceId, sDiceClass );
 
             //alert( "nX : " + x + " ## " + DiceId + " ## " + value );
@@ -179,6 +224,20 @@ function (dojo, declare) {
                        id : DiceId,
                        dClass: sDiceClass
                    } ), 'content_'+DiceId );*/
+        },
+
+        UpdateDiceBtn: function( value )
+        {
+            var nValue = parseInt( value ) + 1;
+            dojo.empty( 'dice_btn_content' );
+            if( nValue < 3 )
+            {
+                dojo.place(
+                    this.format_block( 'jstpl_diceBtn', {
+                        btnlabel : _('Re-roll'),
+                        dicevalue : nValue.toString() +"/2"
+                    } ), 'dice_btn_content' );
+            }
         },
         ///////////////////////////////////////////////////
         //// Player's action
@@ -255,11 +314,68 @@ function (dojo, declare) {
             //            see what is happening in the game.
             // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
             // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-            // 
+            //
+            dojo.subscribe( 'newDice', this, "notif_newDice" );
         },  
         
         // TODO: from this point and below, you can write your game notifications handling methods
-        
+        notif_newDice: function( notif )
+        {
+            var anim = new Array();
+
+            for( var i in notif.args.Dices )
+            {
+                var value = notif.args.Dices[i];
+                var sId = 'dice_'+i;
+                var obj = document.getElementById( sId );
+
+                if( (notif.args.Revived.indexOf( i ) != -1 || notif.args.Revived.length == 0 ) && obj != null  )
+                {
+                    dojo.addClass( sId, 'next_dice_'+((value-1).toString()) );
+                    anim[i] = dojo.fx.chain( [
+                        dojo.fadeOut( {
+                            node: sId,
+                            onEnd: function( node ) {
+                                // Remove any dice class
+                                dojo.removeClass( node, [ 'dice_0', 'dice_1', 'dice_2', 'dice_3', 'dice_4', 'dice_5' ] );
+                                // ... and add the good one
+
+                                var sPre =  'next_dice_';
+                                var bFound = false;
+                                var j=0;
+                                while( j<6 && !bFound )
+                                {
+                                    if( dojo.hasClass( node, sPre+(j).toString()) )
+                                    {
+                                        dojo.removeClass( node, sPre+(j).toString() );
+                                        dojo.addClass( node, 'dice_'+(j.toString()) );
+                                        bFound = true;
+                                    }
+                                    j++;
+                                }
+
+                            }
+                        } ),
+                        dojo.fadeIn( { node: sId  } )
+
+                    ] ); // end of dojo.fx.chain
+
+                    // ... and launch the animation
+                    anim[i].play();
+
+                }
+                else if( obj == null )
+                {
+                    //alert( i + "coco" + value );
+                    this.UpdateDice( i, value );
+                }
+            }
+            this.UpdateDiceBtn( notif.args.Launch );
+
+            //dojo.query( '.dice' ).connect( 'onclick', this, 'onDice' );
+            dojo.query("#dice_btn").connect(  'onclick', this, 'onDiceRetrive' );
+        },
+
         /*
         Example:
         

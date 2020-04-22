@@ -63,6 +63,14 @@
     
     */
 
+      public function roll()
+      {
+          self::setAjaxMode();
+
+          $this->game->roll( );
+          self::ajaxResponse( );
+      }
+
   }
   
 

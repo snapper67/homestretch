@@ -63,3 +63,11 @@ CREATE TABLE IF NOT EXISTS `position` (
    `stone_color` varchar(8) NULL,
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `money` (
+  `player_id` int(10) unsigned NOT NULL,
+  `point_id` smallint(5) unsigned NOT NULL,
+  `points` smallint(5) unsigned,
+  PRIMARY KEY (`player_id`,`point_id`)
+) ENGINE=InnoDB;

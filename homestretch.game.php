@@ -35,6 +35,9 @@ class Homestretch extends Table
         self::initGameStateLabels( array(
             "dice_value_1" => 10,
             "dice_value_2" => 11,
+            "dice_launch"  => 15,
+            "actual_turn"  => 16,
+            "turn_count"   => 17,
             //    "my_first_global_variable" => 10,
             //    "my_second_global_variable" => 11,
             //      ...
@@ -93,6 +96,10 @@ class Homestretch extends Table
 
         self::setGameStateInitialValue( 'dice_value_1', 1 );
         self::setGameStateInitialValue( 'dice_value_2', 1 );
+        self::setGameStateInitialValue( 'turn_count', 5 );
+//        self::setGameStateInitialValue( 'turn_count', self::GetTurnsCount( count($players) ) );
+        self::setGameStateInitialValue( 'dice_launch', 0 );
+        self::setGameStateInitialValue( 'actual_turn', 0 );
 
         // Insert (empty) intersections into database
         $sql = "INSERT INTO position (horse, progress) VALUES ";
@@ -102,6 +109,7 @@ class Homestretch extends Table
         }
         $sql .= implode( $values, ',' );
         self::DbQuery( $sql );
+
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
@@ -127,7 +135,9 @@ class Homestretch extends Table
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
-  
+
+        $result['Dice'] = self::GetDiceValues();
+        $result['DiceLaunch'] =  self::getGameStateValue( 'dice_launch' );
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
         return $result;
@@ -159,7 +169,30 @@ class Homestretch extends Table
         In this space, you can put any utility methods useful for your game logic
     */
 
+    function GetDiceValues()
+    {
+        $Dice = array();
 
+        for( $i=1; $i<=$this->DiceCount; $i++ )
+        {
+            $sId = "dice_value_".((string)$i);
+            $Dice[$i] = self::getGameStateValue($sId );
+        }
+        return $Dice;
+    }
+
+    function GetSum( $Dices=null )
+    {
+        if( $Dices == null )
+            $Dices = self::GetDiceValues();
+
+        $nPoints = 0;
+        foreach( $Dices as $dice )
+        {
+            $nPoints += $dice;
+        }
+        return $nPoints;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Player actions
@@ -195,7 +228,59 @@ class Homestretch extends Table
     }
     
     */
+    function roll( )
+    {
+        self::checkAction( 'rollDice' );
 
+        $player_id = self::getActivePlayerId();
+        $Dice = array();
+
+//        self::incStat( 1/13, "relaunch_average", $player_id );
+        $re_rolled = array();
+
+        $die_change = 0;
+
+        for( $i=1; $i<=$this->DiceCount; $i++ )
+        {
+            $sId = "dice_value_".((string)$i);
+
+            $nValue = self::getGameStateValue($sId );
+
+            $newValue = bga_rand( 1, 6);
+
+            if( $newValue != $nValue )
+                $die_change ++;
+
+            $nValue = $newValue;
+
+            $Dice[ $i ] = $nValue;
+            self::setGameStateValue($sId, $nValue );
+            $re_rolled[] = $nValue;
+        }
+
+        $nLaunch = self::getGameStateValue( 'dice_launch' ) + 1;
+        self::setGameStateValue( 'dice_launch', $nLaunch );
+
+        if( $nLaunch > 2 )
+            throw new feException( "Can't launch more than 2 times" );
+
+//        self::incStat( count( $dices_ids), 'relaunch_number', $player_id );
+//        self::incStat( count( $dices_ids) - $die_change, 'relaunch_same_result', $player_id );
+
+        self::notifyAllPlayers( "newDice", clienttranslate( '${player_name} rolls and gets : ${values}' ), array(
+            'player_id' => $player_id,
+            'player_name' => self::getActivePlayerName(),
+            'Dices'=> $Dice,
+            'Revived' => array(),
+            'Launch' => $nLaunch,
+            'values' => implode( ' / ', $re_rolled )
+        ) );
+
+//        if( $nLaunch == 1 )
+//            $this->gamestate->nextState( "lastlaunch" );
+
+        $this->gamestate->nextState( "rollDice" );
+    }
     
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state arguments
@@ -245,6 +330,88 @@ class Homestretch extends Table
         $this->gamestate->nextState( 'some_gamestate_transition' );
     }    
     */
+
+    function stNewDice()
+    {
+        // TODO not shuffle the card but do a simple cut
+        $players = self::loadPlayersBasicInfos();
+        $player_id = self::getActivePlayerId();
+
+        $Dice = array();
+
+        for( $i=1; $i<=$this->DiceCount; $i++ )
+        {
+            $sId = "dice_value_".((string)$i);
+            $nValue = bga_rand( 1, 6);
+            $Dice[$i] = $nValue;
+            self::setGameStateValue($sId, $nValue );
+
+            // $Dice[$i] = 2;
+            // self::setGameStateValue($sId, 2 );
+        }
+
+
+        self::notifyAllPlayers( "newDice", clienttranslate( '${player_name} rolls dice and get ${values}' ), array(
+            'player_id' => $player_id,
+            'player_name' => self::getActivePlayerName(),
+            'Dices'=> $Dice,
+            'Revived' => array(),
+            'Launch' => 0,
+            'values' => implode( ' / ', $Dice )
+        ) );
+
+        $this->gamestate->nextState( "" );
+    }
+
+    function stEndCheck()
+    {
+        // $player_id = self::activeNextPlayer();
+        // // self::giveExtraTime( $player_id );
+
+        $nTurn = self::getGameStateValue( 'actual_turn' );
+
+        if( $nTurn+1 == self::getGameStateValue( 'turn_count' ) )
+        {
+            $this->gamestate->nextState( "endGame" );
+        }
+        else
+        {
+            $player_id = $this->checkNextPlayer();
+            $this->gamestate->changeActivePlayer( $player_id );
+            self::giveExtraTime( $player_id );
+
+            self::incGameStateValue( 'actual_turn', 1 );
+            self::setGameStateValue( 'dice_launch', 0 );
+
+            if( self::getGameStateValue( 'actual_turn' ) == self::getGameStateValue( 'turn_count' ) )
+            {
+                $this->gamestate->nextState( "endGame" );
+            } else {
+                $this->gamestate->nextState( "nextplayer" );
+            }
+        }
+    }
+
+    function checkNextPlayer() {
+        $next_player_id= self::getActivePlayerId();
+        $players =self::getPlayersNumber();
+
+
+        for($i=0;$i<$players;$i++) {
+            $next_player_id = self::getPlayerAfter( $next_player_id );
+
+            $sql = "SELECT player_zombie FROM player WHERE player_id ='$next_player_id' ";
+            $zombie = self::getUniqueValueFromDB($sql);
+
+            if ( $zombie == 0) {
+                return $next_player_id;
+            } else {
+                self::incGameStateValue( 'actual_turn', 1 );
+            }
+        }
+
+        return $next_player_id;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie

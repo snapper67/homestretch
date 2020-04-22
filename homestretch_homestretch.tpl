@@ -31,7 +31,7 @@
         <!-- BEGIN dice -->
         <div class="dice_content" id="content_{DICE_VALUE}" >
 
-            <div class="dice dice_0" id="dice_{DICE_VALUE}" ></div>
+            <div class="dice dice_0 dice_select" id="dice_{DICE_VALUE}" ></div>
 
         </div>
         <!-- END dice -->
@@ -54,21 +54,22 @@
         <div class="token black_token"></div>
         <div class="token red_token"></div>
     </div>
+    <div class="startingGate">
+        <div class="two black_meeple"></div>
+        <div class="three black_meeple"></div>
+        <div class="four black_meeple"></div>
+        <div class="five black_meeple"></div>
+        <div class="six black_meeple"></div>
+        <div class="seven black_meeple"></div>
+        <div class="eight black_meeple"></div>
+        <div class="nine black_meeple"></div>
+        <div class="ten black_meeple"></div>
+        <div class="eleven black_meeple"></div>
+        <div class="twelve black_meeple"></div>
+    </div>
 </div>
 
-<div class="startingGate">
-    <div class="two black_meeple"></div>
-    <div class="three black_meeple"></div>
-    <div class="four black_meeple"></div>
-    <div class="five black_meeple"></div>
-    <div class="six black_meeple"></div>
-    <div class="seven black_meeple"></div>
-    <div class="eight black_meeple"></div>
-    <div class="nine black_meeple"></div>
-    <div class="ten black_meeple"></div>
-    <div class="eleven black_meeple"></div>
-    <div class="twelve black_meeple"></div>
-</div>
+
 
 
 <script type="text/javascript">
@@ -81,6 +82,7 @@ var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_I
 
 */
 var jstpl_dice = '<div class="dice ${dClass}" id="dice_${id}" >\ </div>';
+var jstpl_diceBtn = '<a class="bgabutton bgabutton_blue" href="#" id="dice_btn"><span>${btnlabel} (${dicevalue})</span></a>';
 </script>  
 
 {OVERALL_GAME_FOOTER}
