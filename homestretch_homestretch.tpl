@@ -42,9 +42,6 @@
 
 </div>
 <div id="board">
-    <!-- BEGIN square -->
-    <div id="square_{X}_{Y}" class="square" style="left: {LEFT}px; top: {TOP}px;"></div>
-    <!-- END square -->
 
     <div id="discs">
         <div class="token blue_token"></div>
@@ -54,18 +51,10 @@
         <div class="token black_token"></div>
         <div class="token red_token"></div>
     </div>
-    <div class="startingGate">
-        <div class="two black_meeple"></div>
-        <div class="three black_meeple"></div>
-        <div class="four black_meeple"></div>
-        <div class="five black_meeple"></div>
-        <div class="six black_meeple"></div>
-        <div class="seven black_meeple"></div>
-        <div class="eight black_meeple"></div>
-        <div class="nine black_meeple"></div>
-        <div class="ten black_meeple"></div>
-        <div class="eleven black_meeple"></div>
-        <div class="twelve black_meeple"></div>
+    <div class="gateBlock" id="gateBlock">
+        <!-- BEGIN gate -->
+        <div class="gate horse_{GATE_VALUE} pos_0 black_meeple" id="horse_{GATE_VALUE}" ></div>
+        <!-- END gate -->
     </div>
 </div>
 

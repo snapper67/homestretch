@@ -96,7 +96,7 @@ class Homestretch extends Table
 
         self::setGameStateInitialValue( 'dice_value_1', 1 );
         self::setGameStateInitialValue( 'dice_value_2', 1 );
-        self::setGameStateInitialValue( 'turn_count', 5 );
+        self::setGameStateInitialValue( 'turn_count', 8 );
 //        self::setGameStateInitialValue( 'turn_count', self::GetTurnsCount( count($players) ) );
         self::setGameStateInitialValue( 'dice_launch', 0 );
         self::setGameStateInitialValue( 'actual_turn', 0 );
@@ -104,7 +104,7 @@ class Homestretch extends Table
         // Insert (empty) intersections into database
         $sql = "INSERT INTO position (horse, progress) VALUES ";
         $values = array();
-        for ($x = 2; $x < 12; $x++) {
+        for ($x = 2; $x <= 12; $x++) {
             $values[] = "($x, 0)";
         }
         $sql .= implode( $values, ',' );
@@ -139,7 +139,11 @@ class Homestretch extends Table
         $result['Dice'] = self::GetDiceValues();
         $result['DiceLaunch'] =  self::getGameStateValue( 'dice_launch' );
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
-  
+
+        // Get horse positions
+        $result['Positions'] = self::getObjectListFromDB( "SELECT horse, progress
+                                                       FROM position" );
+
         return $result;
     }
 
@@ -239,6 +243,7 @@ class Homestretch extends Table
         $re_rolled = array();
 
         $die_change = 0;
+        $die_total = 0;
 
         for( $i=1; $i<=$this->DiceCount; $i++ )
         {
@@ -256,7 +261,13 @@ class Homestretch extends Table
             $Dice[ $i ] = $nValue;
             self::setGameStateValue($sId, $nValue );
             $re_rolled[] = $nValue;
+
+            $die_total += $newValue;
         }
+
+        $sql = "UPDATE position SET progress=progress+2
+                    WHERE horse=" . $die_total;
+        self::DbQuery( $sql );
 
         $nLaunch = self::getGameStateValue( 'dice_launch' ) + 1;
         self::setGameStateValue( 'dice_launch', $nLaunch );
@@ -272,6 +283,7 @@ class Homestretch extends Table
             'player_name' => self::getActivePlayerName(),
             'Dices'=> $Dice,
             'Revived' => array(),
+            'Positions' => array(),
             'Launch' => $nLaunch,
             'values' => implode( ' / ', $re_rolled )
         ) );

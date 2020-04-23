@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -12,7 +13,6 @@
  * Homestretch stylesheet
  *
  */
-
 /*
     This is the CSS stylesheet of your game User Interface.
 
@@ -41,14 +41,8 @@
      Note: on the production platform, this file will be compressed and comments will be removed.
            Consequently, don't hesitate to put as many comments as necessary.
 */
-
-
 /* Note: you must not use any @import directive */
-
-
 /********* You can start writing your CSS below this line: **********/
-
-
 /*
     Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
 
@@ -66,140 +60,307 @@
         background-repeat: none;
     }
 */
-
 #board {
-    width: 795px;
-    height: 600px;
-    background-image: url('img/board.png');
-    position: relative;
-    margin: auto;
-    display: inline-block;
-}
-.startingGate {
-    position: absolute;
-    bottom: 40px;
-    left: 350px;
-    height: 170px;
-    width: 60px;
-}
+  width: 795px;
+  height: 600px;
+  background-image: url("img/board.png");
+  position: relative;
+  margin: auto;
+  display: inline-block; }
+
+.gateBlock {
+  position: absolute;
+  bottom: 40px;
+  left: 350px;
+  height: 170px;
+  width: 60px; }
 
 .blue_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: 0px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: 0px 0px; }
+
 .green_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -30px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -30px 0px; }
+
 .opal_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -60px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -60px 0px; }
+
 .orange_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -90px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -90px 0px; }
+
 .white_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -120px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -120px 0px; }
+
 .black_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -150px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -150px 0px; }
+
 .red_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -180px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -180px 0px; }
+
 .yellow_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -210px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -210px 0px; }
+
 .grey_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -240px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -240px 0px; }
+
 .purple_token {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -270px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -270px 0px; }
+
 .token {
-    width: 30px;
-    height: 30px;
-    background-repeat: none;
-}
-.startingGate div {
-    width: 30px;
-    height: 15px;
-}
+  width: 30px;
+  height: 30px;
+  background-repeat: none; }
+
 .blue_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: 0px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: 0px 0px; }
+
 .green_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -30px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -30px 0px; }
+
 .opal_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -60px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -60px 0px; }
+
 .orange_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -90px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -90px 0px; }
+
 .white_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -120px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -120px 0px; }
+
 .black_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -150px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -150px 0px; }
+
 .red_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -180px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -180px 0px; }
+
 .yellow_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -210px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -210px 0px; }
+
 .grey_meeple {
-    background-image: url('img/30_30_meeple.png');
-    background-position: -240px 0px;
-}
+  background-image: url("img/30_30_meeple.png");
+  background-position: -240px 0px; }
+
 .purple_meeple {
-    background-image: url('img/30_30_tokens.png');
-    background-position: -270px 0px;
-}
+  background-image: url("img/30_30_tokens.png");
+  background-position: -270px 0px; }
 
 #diceTable {
-   float: right;
-}
-.dice
-{
-    float: left;
-    width: 70px;
-    height: 70px;
-    margin-left: 6px;
-    background-image: url('img/Dices.png');
-    cursor: pointer;
-}
+  float: right; }
 
+.dice {
+  float: left;
+  width: 70px;
+  height: 70px;
+  margin-left: 6px;
+  background-image: url("img/Dices.png");
+  cursor: pointer; }
 
-.dice_0 { background-position:-0px;  }
-.dice_1 { background-position:-71px;  }
-.dice_2 { background-position:-142px;  }
-.dice_3 { background-position:-213px;  }
-.dice_4 { background-position:-284px;  }
-.dice_5 { background-position:-355px;  }
+.dice_0 {
+  background-position: -0px; }
+
+.dice_1 {
+  background-position: -71px; }
+
+.dice_2 {
+  background-position: -142px; }
+
+.dice_3 {
+  background-position: -213px; }
+
+.dice_4 {
+  background-position: -284px; }
+
+.dice_5 {
+  background-position: -355px; }
+
+.gate {
+  width: 30px;
+  height: 15px; }
+
+.horse_2 {
+  position: absolute;
+  left: 0; }
+  .horse_2.pos_1 {
+    left: 100px; }
+  .horse_2.pos_2 {
+    left: 190px;
+    top: -20px; }
+
+.horse_3 {
+  position: absolute;
+  left: 0;
+  top: 15px; }
+  .horse_3 .pos_1 {
+    left: 100px; }
+  .horse_3.pos_2 {
+    left: 200px;
+    top: 5px; }
+  .horse_3.pos_4 {
+    left: 240px;
+    top: -95px; }
+
+.horse_4 {
+  position: absolute;
+  left: 0;
+  top: 30px; }
+  .horse_4.pos_1 {
+    left: 100px; }
+  .horse_4.pos_2 {
+    left: 200px;
+    top: 5px; }
+  .horse_4.pos_4 {
+    left: 255px;
+    top: -95px; }
+
+.horse_5 {
+  position: absolute;
+  left: 0;
+  top: 45px; }
+  .horse_5.pos_1 {
+    left: 100px; }
+  .horse_5.pos_2 {
+    left: 230px;
+    top: 25px; }
+  .horse_5.pos_4 {
+    left: 270px;
+    top: -95px; }
+  .horse_5.pos_4 {
+    left: 220px;
+    top: -245px; }
+
+.horse_6 {
+  position: absolute;
+  left: 0;
+  top: 60px; }
+  .horse_6.pos_1 {
+    left: 100px; }
+  .horse_6.pos_2 {
+    left: 240px;
+    top: 40px; }
+  .horse_6.pos_3 {
+    left: 290px;
+    top: -100px; }
+  .horse_6.pos_4 {
+    left: 240px;
+    top: -250px; }
+
+.horse_7 {
+  position: absolute;
+  left: 0;
+  top: 75px; }
+  .horse_7.pos_1 {
+    left: 100px; }
+  .horse_7.pos_2 {
+    left: 250px;
+    top: 55px; }
+  .horse_7.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_7.pos_4 {
+    left: 250px;
+    top: -265px; }
+
+.horse_8 {
+  position: absolute;
+  left: 0;
+  top: 90px; }
+  .horse_8.pos_1 {
+    left: 100px; }
+  .horse_8.pos_2 {
+    left: 260px;
+    top: 65px; }
+  .horse_8.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_8.pos_4 {
+    left: 315px;
+    top: -95px; }
+
+.horse_9 {
+  position: absolute;
+  left: 0;
+  top: 105px; }
+  .horse_9.pos_1 {
+    left: 100px; }
+  .horse_9.pos_2 {
+    left: 280px;
+    top: 75px; }
+  .horse_9.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_9.pos_4 {
+    left: 330px;
+    top: -95px; }
+
+.horse_10 {
+  position: absolute;
+  left: 0;
+  top: 120px; }
+  .horse_10.pos_1 {
+    left: 100px; }
+  .horse_10.pos_2 {
+    left: 250px;
+    top: 55px; }
+  .horse_10.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_10.pos_4 {
+    left: 360px;
+    top: -95px; }
+
+.horse_11 {
+  position: absolute;
+  left: 0;
+  top: 135px; }
+  .horse_11.pos_1 {
+    left: 100px; }
+  .horse_11.pos_2 {
+    left: 250px;
+    top: 55px; }
+  .horse_11.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_11.pos_4 {
+    left: 390px;
+    top: -95px; }
+
+.horse_12 {
+  position: absolute;
+  left: 0;
+  top: 150px; }
+  .horse_12.pos_1 {
+    left: 100px; }
+  .horse_12.pos_2 {
+    left: 250px;
+    top: 55px; }
+  .horse_12.pos_3 {
+    left: 250px;
+    top: 55px; }
+  .horse_12.pos_4 {
+    left: 420px;
+    top: -95px; }
 
 /*.dice_select*/
 /*{*/
 /*    !* outline: 3px red solid; *!*/
 /*    border : 3px red solid;*/
 /*}*/
-
 /*.dice_select::after {*/
 /*    position: relative;*/
 /*    display: block;*/

@@ -46,6 +46,11 @@
             $this->page->insert_block( "dice", array( "DICE_VALUE" => $i, "x"=>$x ) );
         }
 
+        $this->page->begin_block( "homestretch_homestretch", "gate" );
+        for( $i=2; $i<=12; $i++ )
+        {
+            $this->page->insert_block( "gate", array( "GATE_VALUE" => $i ) );
+        }
         /*
         
         // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}

@@ -61,7 +61,14 @@ function (dojo, declare) {
             for( var i in this.gamedatas.Dice )
             {
                 var value = this.gamedatas.Dice[i];
-                // this.UpdateDice( i, value );
+                this.UpdateDice( i, value );
+            }
+
+            for( var i in this.gamedatas.Positions )
+            {
+                var pos = this.gamedatas.Positions[i];
+                console.log(pos)
+                this.UpdatePositions( parseInt( i ) + 2, parseInt( pos.progress ) );
             }
  
             // Setup game notifications to handle (see "setupNotifications" method below)
@@ -72,17 +79,6 @@ function (dojo, declare) {
             console.log( "Ending game setup" );
         },
 
-        onDice: function( evt )
-        {
-            //alert( "coco" );
-            evt.preventDefault();
-            dojo.stopEvent( evt );
-
-            if( this.checkAction( 'rollDice' ) )
-            {
-
-            }
-        },
         onDiceRetrive: function( evt )
         {
             evt.preventDefault();
@@ -207,6 +203,15 @@ function (dojo, declare) {
             script.
         
         */
+        UpdatePositions: function( HorseId, value )
+        {
+            //var x =  (value-1) *71;
+            var sDiceClass =  "pos_"+(value).toString();
+            console.log(HorseId)
+            console.log(value)
+            dojo.removeClass( 'horse_'+HorseId, ['pos_0','pos_1','pos_2','pos_3','pos_4','pos_5','pos_6','pos_7','pos_0','pos_9','pos_10','pos_11','pos_12'] );
+            dojo.addClass( 'horse_'+HorseId, sDiceClass );
+        },
 
         UpdateDice: function( DiceId, value )
         {
@@ -322,10 +327,11 @@ function (dojo, declare) {
         notif_newDice: function( notif )
         {
             var anim = new Array();
-
+            var sum = 0;
             for( var i in notif.args.Dices )
             {
                 var value = notif.args.Dices[i];
+                sum += value;
                 var sId = 'dice_'+i;
                 var obj = document.getElementById( sId );
 
@@ -370,6 +376,13 @@ function (dojo, declare) {
                     this.UpdateDice( i, value );
                 }
             }
+
+
+            var pos = this.gamedatas.Positions[sum - 2];
+            console.log('update position');
+            console.log(pos);
+            this.UpdatePositions( parseInt( pos.horse ), parseInt( pos.progress ) + 2 );
+
             this.UpdateDiceBtn( notif.args.Launch );
 
             //dojo.query( '.dice' ).connect( 'onclick', this, 'onDice' );
