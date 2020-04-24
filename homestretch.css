@@ -289,8 +289,8 @@
     left: 250px;
     top: 55px; }
   .horse_8.pos_4 {
-    left: 315px;
-    top: -95px; }
+    left: 265px;
+    top: -280px; }
 
 .horse_9 {
   position: absolute;
@@ -302,11 +302,11 @@
     left: 280px;
     top: 75px; }
   .horse_9.pos_3 {
-    left: 250px;
-    top: 55px; }
-  .horse_9.pos_4 {
     left: 330px;
     top: -95px; }
+  .horse_9.pos_4 {
+    left: 265px;
+    top: -285px; }
 
 .horse_10 {
   position: absolute;
@@ -315,8 +315,8 @@
   .horse_10.pos_1 {
     left: 100px; }
   .horse_10.pos_2 {
-    left: 250px;
-    top: 55px; }
+    left: 300px;
+    top: 105px; }
   .horse_10.pos_3 {
     left: 250px;
     top: 55px; }
@@ -350,11 +350,11 @@
     left: 250px;
     top: 55px; }
   .horse_12.pos_3 {
-    left: 250px;
-    top: 55px; }
-  .horse_12.pos_4 {
-    left: 420px;
+    left: 380px;
     top: -95px; }
+  .horse_12.pos_4 {
+    left: 310px;
+    top: -335px; }
 
 /*.dice_select*/
 /*{*/

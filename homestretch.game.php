@@ -38,6 +38,7 @@ class Homestretch extends Table
             "dice_launch"  => 15,
             "actual_turn"  => 16,
             "turn_count"   => 17,
+            "dice_total"   => 18,
             //    "my_first_global_variable" => 10,
             //    "my_second_global_variable" => 11,
             //      ...
@@ -234,12 +235,12 @@ class Homestretch extends Table
     */
     function roll( )
     {
+
         self::checkAction( 'rollDice' );
 
         $player_id = self::getActivePlayerId();
         $Dice = array();
 
-//        self::incStat( 1/13, "relaunch_average", $player_id );
         $re_rolled = array();
 
         $die_change = 0;
@@ -265,33 +266,120 @@ class Homestretch extends Table
             $die_total += $newValue;
         }
 
-        $sql = "UPDATE position SET progress=progress+2
-                    WHERE horse=" . $die_total;
-        self::DbQuery( $sql );
+//        $sql = "UPDATE position SET progress=progress+2
+//                    WHERE horse=" . $die_total;
+//        self::DbQuery( $sql );
 
-        $nLaunch = self::getGameStateValue( 'dice_launch' ) + 1;
+        $nLaunch = 1;
         self::setGameStateValue( 'dice_launch', $nLaunch );
-
-        if( $nLaunch > 2 )
-            throw new feException( "Can't launch more than 2 times" );
-
-//        self::incStat( count( $dices_ids), 'relaunch_number', $player_id );
-//        self::incStat( count( $dices_ids) - $die_change, 'relaunch_same_result', $player_id );
+        self::setGameStateValue( 'dice_total', $die_total );
 
         self::notifyAllPlayers( "newDice", clienttranslate( '${player_name} rolls and gets : ${values}' ), array(
             'player_id' => $player_id,
             'player_name' => self::getActivePlayerName(),
             'Dices'=> $Dice,
             'Revived' => array(),
-            'Positions' => array(),
+            'Positions' => self::getObjectListFromDB( "SELECT horse, progress
+                                                       FROM position" ),
             'Launch' => $nLaunch,
-            'values' => implode( ' / ', $re_rolled )
+            'values' => implode( ' / ', $re_rolled ),
+            'total' => $die_total
         ) );
 
-//        if( $nLaunch == 1 )
-//            $this->gamestate->nextState( "lastlaunch" );
-
         $this->gamestate->nextState( "rollDice" );
+    }
+
+    function reRoll( )
+    {
+        self::checkAction( 'reRoll' );
+
+        $player_id = self::getActivePlayerId();
+        $Dice = array();
+
+        $re_rolled = array();
+
+        $die_change = 0;
+        $die_total = 0;
+
+        $old_die_total = self::getGameStateValue( 'dice_total', 0 );
+
+        $sql = "UPDATE position SET progress=progress+1
+                    WHERE horse=" . $old_die_total;
+        self::DbQuery( $sql );
+
+        for( $i=1; $i<=$this->DiceCount; $i++ )
+        {
+            $sId = "dice_value_".((string)$i);
+
+            $nValue = self::getGameStateValue($sId );
+
+            $newValue = bga_rand( 1, 6);
+
+            if( $newValue != $nValue )
+                $die_change ++;
+
+            $nValue = $newValue;
+
+            $Dice[ $i ] = $nValue;
+            self::setGameStateValue($sId, $nValue );
+            $re_rolled[] = $nValue;
+
+            $die_total += $newValue;
+        }
+
+        $sql = "UPDATE position SET progress=progress+2
+                    WHERE horse=" . $die_total;
+        self::DbQuery( $sql );
+
+        self::setGameStateValue( 'dice_launch', 0 );
+        self::setGameStateValue( 'dice_total', $die_total );
+
+        self::notifyAllPlayers( "newDice", clienttranslate( '${player_name} re rolls and gets : ${values}' ), array(
+            'player_id' => $player_id,
+            'player_name' => self::getActivePlayerName(),
+            'Dices'=> $Dice,
+            'Revived' => array(),
+            'Positions' => self::getObjectListFromDB( "SELECT horse, progress
+                                                       FROM position" ),
+            'Launch' => 0,
+            'values' => implode( ' / ', $re_rolled ),
+            'Total' => $die_total,
+        ) );
+
+        $this->gamestate->nextState( "reRoll" );
+    }
+
+    function moveHorse( )
+    {
+        self::checkAction( 'moveHorse' );
+
+        $player_id = self::getActivePlayerId();
+        $Dice = array();
+
+        $re_rolled = array();
+
+        $die_total = self::getGameStateValue( 'dice_total', 0 );
+
+        $sql = "UPDATE position SET progress=progress+2
+                    WHERE horse=" . $die_total;
+        self::DbQuery( $sql );
+
+        $nLaunch = 0;
+        self::setGameStateValue( 'dice_launch', $nLaunch );
+
+        self::notifyAllPlayers( "newDice", clienttranslate( '${player_name} rolls once' ), array(
+            'player_id' => $player_id,
+            'player_name' => self::getActivePlayerName(),
+            'Dices'=> $Dice,
+            'Revived' => array(),
+            'Positions' => self::getObjectListFromDB( "SELECT horse, progress
+                                                       FROM position" ),
+            'Launch' => $nLaunch,
+            'values' => implode( ' / ', $re_rolled ),
+            'Total' => self::getGameStateValue( 'dice_total', 0 ),
+        ) );
+
+        $this->gamestate->nextState( "moveHorse" );
     }
     
 //////////////////////////////////////////////////////////////////////////////

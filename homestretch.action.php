@@ -71,6 +71,22 @@
           self::ajaxResponse( );
       }
 
+      public function reRoll()
+      {
+          self::setAjaxMode();
+
+          $this->game->reRoll( );
+          self::ajaxResponse( );
+      }
+
+      public function moveHorse()
+      {
+          self::setAjaxMode();
+
+          $this->game->moveHorse( );
+          self::ajaxResponse( );
+      }
+
   }
   
 

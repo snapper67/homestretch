@@ -71,7 +71,9 @@ var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_I
 
 */
 var jstpl_dice = '<div class="dice ${dClass}" id="dice_${id}" >\ </div>';
-var jstpl_diceBtn = '<a class="bgabutton bgabutton_blue" href="#" id="dice_btn"><span>${btnlabel} (${dicevalue})</span></a>';
-</script>  
+var jstpl_rollBtn = '<a class="bgabutton bgabutton_blue" href="#" id="roll_btn"><span>${btnlabel}</span></a>';
+var jstpl_rerollBtn = '<a class="bgabutton bgabutton_blue" href="#" id="reroll_btn"><span>${btnlabel}</span></a>';
+var jstpl_moveBtn = '<a class="bgabutton bgabutton_blue" href="#" id="move_horse_btn"><span>${btnlabel}</span></a>';
+</script>
 
 {OVERALL_GAME_FOOTER}
