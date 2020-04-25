@@ -75,9 +75,9 @@ function (dojo, declare) {
             this.setupNotifications();
             this.UpdateDiceBtn( gamedatas.DiceLaunch );
             // dojo.query( '.dice' ).connect( 'onclick', this, 'onDice' );
-            dojo.query("#roll_btn").connect(  'onclick', this, 'onDiceRoll' );
-            dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
-            dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
+            // dojo.query("#roll_btn").connect(  'onclick', this, 'onDiceRoll' );
+            // dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
+            // dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
             console.log( "Ending game setup" );
         },
 
@@ -165,8 +165,23 @@ function (dojo, declare) {
                 
                 break;
            */
-           
-           
+
+            case 'playerTurnBegin':
+                this.UpdateDiceBtn( 0 );
+
+                break;
+            // case 'playerTurnChoose':
+            //     dojo.empty( 'dice_btn_content' );
+            //     if( this.isCurrentPlayerActive() )
+            //     {
+            //         dojo.place(
+            //             this.format_block('jstpl_rollBtn', {
+            //                 btnlabel: _('Roll'),
+            //                 dicevalue: '',
+            //             }), 'dice_btn_content');
+            //     }
+            //     this.UpdateDiceBtn( 0 );
+            //     break;
             case 'dummmy':
                 break;
             }
@@ -191,9 +206,8 @@ function (dojo, declare) {
                 
                 break;
            */
-           
-           
-            case 'dummmy':
+        case 'dummy':
+                this.UpdateDiceBtn( 0 );
                 break;
             }               
         }, 
@@ -265,34 +279,58 @@ function (dojo, declare) {
         {
             console.log('Update Dice')
             console.log(value)
+            console.log(this.isCurrentPlayerActive())
+
             var nValue = parseInt( value );
             dojo.empty( 'dice_btn_content' );
-            if( nValue === 0 )
-            {
-                dojo.place(
-                    this.format_block( 'jstpl_rollBtn', {
-                        btnlabel : _('Roll'),
-                        dicevalue : '',
-                    } ), 'dice_btn_content' );
-            }
-            else
-            {
-                if( nValue === 1 && this.isCurrentPlayerActive()) {
-                    dojo.place(
-                        this.format_block( 'jstpl_moveBtn', {
-                            btnlabel : _('Move Horse 2 spaces'),
-                        } ), 'dice_btn_content' );
-                    dojo.place(
-                        this.format_block( 'jstpl_rerollBtn', {
-                            btnlabel: _('Re-Roll'),
-                        } ), 'dice_btn_content' );
-                } else {
-                    dojo.place(
-                        this.format_block('jstpl_rollBtn', {
-                            btnlabel: _('Done'),
-                        }), 'dice_btn_content');
+            if (this.isCurrentPlayerActive()) {
+                switch( nValue ) {
+                    case 0:
+                        dojo.place(
+                            this.format_block('jstpl_rollBtn', {
+                                btnlabel: _('Roll'),
+                                dicevalue: '',
+                            }), 'dice_btn_content');
+                        break;
+                    case 1:
+                        dojo.place(
+                            this.format_block('jstpl_moveBtn', {
+                                btnlabel: _('Move Horse 2 spaces'),
+                            }), 'dice_btn_content');
+                        dojo.place(
+                            this.format_block('jstpl_rerollBtn', {
+                                btnlabel: _('Re-Roll'),
+                            }), 'dice_btn_content');
+                        break;
                 }
             }
+            dojo.query("#roll_btn").connect(  'onclick', this, 'onDiceRoll' );
+            dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
+            dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
+            // if (nValue === 0) {
+            //     dojo.place(
+            //         this.format_block('jstpl_rollBtn', {
+            //             btnlabel: _('Roll'),
+            //             dicevalue: '',
+            //         }), 'dice_btn_content');
+            // } else {
+            //     if (nValue === 1 && this.isCurrentPlayerActive()) {
+            //         dojo.place(
+            //             this.format_block('jstpl_moveBtn', {
+            //                 btnlabel: _('Move Horse 2 spaces'),
+            //             }), 'dice_btn_content');
+            //         dojo.place(
+            //             this.format_block('jstpl_rerollBtn', {
+            //                 btnlabel: _('Re-Roll'),
+            //             }), 'dice_btn_content');
+            //     } else {
+                    // dojo.place(
+                    //     this.format_block('jstpl_rollBtn', {
+                    //         btnlabel: _('Done'),
+                    //     }), 'dice_btn_content');
+            //     }
+            // }
+
         },
         ///////////////////////////////////////////////////
         //// Player's action
@@ -427,23 +465,25 @@ function (dojo, declare) {
                     this.UpdateDice( i, value );
                 }
             }
-
-            if (notif.args.Launch != 1) {
-                // We are using 2 -12 so offset the array
-                console.log('update position');
-                console.log(sum);
-                var pos = notif.args.Positions[sum - 2];
-
-                console.log(pos);
-                console.log(notif);
+            var pos = [];
+            var prev = parseInt(notif.args.Previous_Total)
+            if (prev > 0) {
+                console.log('Moving ' + prev + ' one step')
+                pos = notif.args.Positions[prev - 2];
                 this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
             }
+            if (notif.args.Launch != 1) {
+                // We are using 2 -12 so offset the array
+                pos = notif.args.Positions[sum - 2];
+                this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
+            }
+
             this.UpdateDiceBtn( notif.args.Launch );
 
             //dojo.query( '.dice' ).connect( 'onclick', this, 'onDice' );
-            dojo.query("#roll_btn").connect(  'onclick', this, 'onDiceRoll' );
-            dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
-            dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
+            // dojo.query("#roll_btn").connect(  'onclick', this, 'onDiceRoll' );
+            // dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
+            // dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
         },
 
         /*

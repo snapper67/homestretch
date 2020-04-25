@@ -80,7 +80,7 @@ $machinestates = array(
         "transitions" => array( "" => 10 )
     ),
     10 => array(
-        "name" => "playerTurn",
+        "name" => "playerTurnBegin",
         "description" => clienttranslate('${actplayer} must roll the dice'),
         "descriptionmyturn" => clienttranslate('${you} must roll the dice'),
         "type" => "activeplayer",
@@ -88,21 +88,21 @@ $machinestates = array(
         "transitions" => array( "rollDice" => 11 )
     ),
     11 => array(
-        "name" => "playerTurn",
+        "name" => "playerTurnChoose",
         "description" => clienttranslate('${actplayer} must choose an option'),
         "descriptionmyturn" => clienttranslate('${you} must choose an option'),
         "type" => "activeplayer",
         "possibleactions" => array( "moveHorse", "reRoll" ),
         "transitions" => array( "moveHorse" => 22, "reRoll" => 22)
     ),
-    12 => array(
-        "name" => "playerTurn",
-        "description" => clienttranslate('${actplayer} must choose an option'),
-        "descriptionmyturn" => clienttranslate('${you} must choose an option'),
-        "type" => "activeplayer",
-        "possibleactions" => array( "moveHorse" ),
-        "transitions" => array( "moveHorse" => 22)
-    ),
+//    12 => array(
+//        "name" => "playerTurn",
+//        "description" => clienttranslate('${actplayer} must choose an option'),
+//        "descriptionmyturn" => clienttranslate('${you} must choose an option'),
+//        "type" => "activeplayer",
+//        "possibleactions" => array( "moveHorse" ),
+//        "transitions" => array( "moveHorse" => 22)
+//    ),
     22 => array(
         "name" => "checkEnd",
         "description" => "",

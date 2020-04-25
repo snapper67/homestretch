@@ -283,7 +283,8 @@ class Homestretch extends Table
                                                        FROM position" ),
             'Launch' => $nLaunch,
             'values' => implode( ' / ', $re_rolled ),
-            'total' => $die_total
+            'total' => $die_total,
+            'Previous_Total' => 0,
         ) );
 
         $this->gamestate->nextState( "rollDice" );
@@ -301,8 +302,8 @@ class Homestretch extends Table
         $die_change = 0;
         $die_total = 0;
 
+//        Record the single movement on a re roll
         $old_die_total = self::getGameStateValue( 'dice_total', 0 );
-
         $sql = "UPDATE position SET progress=progress+1
                     WHERE horse=" . $old_die_total;
         self::DbQuery( $sql );
@@ -327,6 +328,7 @@ class Homestretch extends Table
             $die_total += $newValue;
         }
 
+        // Record the movement on the new dice
         $sql = "UPDATE position SET progress=progress+2
                     WHERE horse=" . $die_total;
         self::DbQuery( $sql );
@@ -344,6 +346,7 @@ class Homestretch extends Table
             'Launch' => 0,
             'values' => implode( ' / ', $re_rolled ),
             'Total' => $die_total,
+            'Previous_Total' => $old_die_total,
         ) );
 
         $this->gamestate->nextState( "reRoll" );
@@ -377,6 +380,7 @@ class Homestretch extends Table
             'Launch' => $nLaunch,
             'values' => implode( ' / ', $re_rolled ),
             'Total' => self::getGameStateValue( 'dice_total', 0 ),
+            'Previous_Total' => 0,
         ) );
 
         $this->gamestate->nextState( "moveHorse" );
