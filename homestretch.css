@@ -64,14 +64,16 @@
   width: 795px;
   height: 600px;
   background-image: url("img/board.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
   margin: auto;
   display: inline-block; }
 
 .gateBlock {
   position: absolute;
-  bottom: 40px;
-  left: 350px;
+  bottom: 26px;
+  left: 400px;
   height: 170px;
   width: 60px; }
 
@@ -118,11 +120,11 @@
 .token {
   width: 30px;
   height: 30px;
-  background-repeat: none; }
+  background-repeat: no-repeat; }
 
 .blue_meeple {
   background-image: url("img/30_30_meeple.png");
-  background-position: 0px 0px; }
+  background-position: 0 0; }
 
 .green_meeple {
   background-image: url("img/30_30_meeple.png");
@@ -189,6 +191,13 @@
 .dice_5 {
   background-position: -355px; }
 
+.horse_card {
+  background-image: url("img/Dices.png"); }
+
+#myhand div {
+  height: 178px;
+  width: 129px; }
+
 .gate {
   width: 30px;
   height: 15px; }
@@ -197,164 +206,242 @@
   position: absolute;
   left: 0; }
   .horse_2.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_2.pos_2 {
-    left: 190px;
+    left: 150px;
     top: -20px; }
+  .horse_2.pos_3 {
+    left: 200px;
+    top: -105px; }
+  .horse_2.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_2.pos_7 {
+    left: -230px;
+    top: -120px; }
 
 .horse_3 {
   position: absolute;
   left: 0;
   top: 15px; }
   .horse_3 .pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_3.pos_2 {
-    left: 200px;
+    left: 160px;
     top: 5px; }
+  .horse_3.pos_3 {
+    left: 210px;
+    top: -105px; }
   .horse_3.pos_4 {
     left: 240px;
     top: -95px; }
+  .horse_3.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_3.pos_7 {
+    left: -240px;
+    top: -120px; }
 
 .horse_4 {
   position: absolute;
   left: 0;
   top: 30px; }
   .horse_4.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_4.pos_2 {
-    left: 200px;
-    top: 5px; }
+    left: 170px;
+    top: 15px; }
+  .horse_4.pos_3 {
+    left: 220px;
+    top: -105px; }
   .horse_4.pos_4 {
     left: 255px;
     top: -95px; }
+  .horse_4.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_4.pos_7 {
+    left: -250px;
+    top: -120px; }
 
 .horse_5 {
   position: absolute;
   left: 0;
   top: 45px; }
   .horse_5.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_5.pos_2 {
-    left: 230px;
+    left: 190px;
     top: 25px; }
+  .horse_5.pos_3 {
+    left: 230px;
+    top: -105px; }
   .horse_5.pos_4 {
     left: 270px;
     top: -95px; }
-  .horse_5.pos_4 {
-    left: 220px;
+  .horse_5.pos_5 {
+    left: 0;
     top: -245px; }
+  .horse_5.pos_7 {
+    left: -260px;
+    top: -120px; }
 
 .horse_6 {
   position: absolute;
   left: 0;
   top: 60px; }
   .horse_6.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_6.pos_2 {
-    left: 240px;
+    left: 200px;
     top: 40px; }
   .horse_6.pos_3 {
-    left: 290px;
-    top: -100px; }
+    left: 240px;
+    top: -105px; }
   .horse_6.pos_4 {
     left: 240px;
     top: -250px; }
+  .horse_6.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_6.pos_7 {
+    left: -270px;
+    top: -120px; }
 
 .horse_7 {
   position: absolute;
   left: 0;
   top: 75px; }
   .horse_7.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_7.pos_2 {
-    left: 250px;
+    left: 210px;
     top: 55px; }
   .horse_7.pos_3 {
-    left: 300px;
-    top: -95px; }
+    left: 250px;
+    top: -105px; }
   .horse_7.pos_4 {
     left: 250px;
     top: -265px; }
+  .horse_7.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_7.pos_7 {
+    left: -280px;
+    top: -120px; }
 
 .horse_8 {
   position: absolute;
   left: 0;
   top: 90px; }
   .horse_8.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_8.pos_2 {
-    left: 260px;
+    left: 220px;
     top: 65px; }
   .horse_8.pos_3 {
-    left: 315px;
-    top: -95px; }
+    left: 260px;
+    top: -105px; }
   .horse_8.pos_4 {
     left: 265px;
     top: -280px; }
+  .horse_8.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_8.pos_7 {
+    left: -290px;
+    top: -120px; }
 
 .horse_9 {
   position: absolute;
   left: 0;
   top: 105px; }
   .horse_9.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_9.pos_2 {
-    left: 280px;
+    left: 240px;
     top: 75px; }
   .horse_9.pos_3 {
-    left: 330px;
-    top: -95px; }
+    left: 270px;
+    top: -105px; }
   .horse_9.pos_4 {
     left: 265px;
     top: -285px; }
+  .horse_9.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_9.pos_7 {
+    left: -300px;
+    top: -120px; }
 
 .horse_10 {
   position: absolute;
   left: 0;
   top: 120px; }
   .horse_10.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_10.pos_2 {
-    left: 300px;
+    left: 260px;
     top: 105px; }
   .horse_10.pos_3 {
-    left: 345px;
-    top: -95px; }
+    left: 280px;
+    top: -105px; }
   .horse_10.pos_4 {
     left: 360px;
     top: -95px; }
+  .horse_10.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_10.pos_7 {
+    left: -310px;
+    top: -120px; }
 
 .horse_11 {
   position: absolute;
   left: 0;
   top: 135px; }
   .horse_11.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_11.pos_2 {
-    left: 250px;
+    left: 270px;
     top: 55px; }
   .horse_11.pos_3 {
-    left: 360px;
-    top: -95px; }
+    left: 290px;
+    top: -105px; }
   .horse_11.pos_4 {
     left: 390px;
     top: -95px; }
+  .horse_11.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_11.pos_7 {
+    left: -320px;
+    top: -120px; }
 
 .horse_12 {
   position: absolute;
   left: 0;
   top: 150px; }
   .horse_12.pos_1 {
-    left: 100px; }
+    left: 60px; }
   .horse_12.pos_2 {
-    left: 320px;
+    left: 280px;
     top: 115px; }
   .horse_12.pos_3 {
-    left: 380px;
-    top: -95px; }
+    left: 280px;
+    top: -105px; }
   .horse_12.pos_4 {
     left: 310px;
     top: -335px; }
+  .horse_12.pos_5 {
+    left: 0;
+    top: -270px; }
+  .horse_12.pos_7 {
+    left: -260px;
+    top: -120px; }
+  .horse_12.pos_7 {
+    left: -330px;
+    top: -120px; }
 
 /*.dice_select*/
 /*{*/

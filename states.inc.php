@@ -58,42 +58,61 @@ $machinestates = array(
         "description" => "",
         "type" => "manager",
         "action" => "stGameSetup",
-        "transitions" => array( "" => 5 )
+        "transitions" => array( "" => 20 )
     ),
     
     // Note: ID=2 => your first state
 
-//    2 => array(
-//    		"name" => "cardDraft",
-//    		"description" => clienttranslate('${actplayer} must choose a card'),
-//    		"descriptionmyturn" => clienttranslate('${you} must choose a card'),
-//    		"type" => "multipleactiveplayer",
-//    		"possibleactions" => array( "takeCard", "pass" ),
-//    		"transitions" => array( "takeCard" => 2, "pass" => 2 )
-//    ),
-    5 => array(
+    2 => array(
+    		"name" => "cardDraft",
+    		"description" => clienttranslate('${actplayer} must choose a card'),
+    		"descriptionmyturn" => clienttranslate('${you} must choose a card'),
+    		"type" => "multipleactiveplayer",
+    		"possibleactions" => array( "draftCard", "pass" ),
+    		"transitions" => array( "draftCard" => 2, "pass" => 2 )
+    ),
+    20 => array(
+        "name" => "newHand",
+        "description" => "",
+        "type" => "game",
+        "action" => "stNewHand",
+        "updateGameProgression" => true,
+        "transitions" => array( "" => 21 )
+    ),
+
+    21 => array(
+        "name" => "draftCards",
+        "description" => clienttranslate('Some players must choose 1 card'),
+        "descriptionmyturn" => clienttranslate('${you} must choose 1 card'),
+        "type" => "multipleactiveplayer",
+        "action" => "stdraftCard",
+//        "args" => "argGiveCards",
+        "possibleactions" => array( "draftCard" ),
+        "transitions" => array( "draftCard" => 22, "skip" => 22 )
+    ),
+    30 => array(
         "name" => "newDice",
         "description" => "",
         "type" => "game",
         "action" => "stNewDice",
         "updateGameProgression" => true,
-        "transitions" => array( "" => 10 )
+        "transitions" => array( "" => 33 )
     ),
-    10 => array(
+    33 => array(
         "name" => "playerTurnBegin",
         "description" => clienttranslate('${actplayer} must roll the dice'),
         "descriptionmyturn" => clienttranslate('${you} must roll the dice'),
         "type" => "activeplayer",
         "possibleactions" => array( "rollDice" ),
-        "transitions" => array( "rollDice" => 11 )
+        "transitions" => array( "rollDice" => 36 )
     ),
-    11 => array(
+    36 => array(
         "name" => "playerTurnChoose",
         "description" => clienttranslate('${actplayer} must choose an option'),
         "descriptionmyturn" => clienttranslate('${you} must choose an option'),
         "type" => "activeplayer",
         "possibleactions" => array( "moveHorse", "reRoll" ),
-        "transitions" => array( "moveHorse" => 22, "reRoll" => 22)
+        "transitions" => array( "moveHorse" => 92, "reRoll" => 92)
     ),
 //    12 => array(
 //        "name" => "playerTurn",
@@ -103,13 +122,13 @@ $machinestates = array(
 //        "possibleactions" => array( "moveHorse" ),
 //        "transitions" => array( "moveHorse" => 22)
 //    ),
-    22 => array(
+    92 => array(
         "name" => "checkEnd",
         "description" => "",
         "type" => "game",
         "action" => "stEndCheck",
         "updateGameProgression" => true,
-        "transitions" => array( "nextplayer" => 10, "endGame" => 99 )
+        "transitions" => array( "nextplayer" => 30, "endGame" => 99 )
     ),
 
     /*

@@ -51,6 +51,8 @@
         {
             $this->page->insert_block( "gate", array( "GATE_VALUE" => $i ) );
         }
+
+        $this->tpl['MY_HAND'] = self::_("My hand");
         /*
         
         // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}

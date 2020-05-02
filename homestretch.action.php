@@ -62,6 +62,22 @@
     }
     
     */
+      public function draftCard()
+      {
+          self::setAjaxMode();
+          $cards_raw = self::getArg( "cards", AT_numberlist, true );
+
+          // Removing last ';' if exists
+          if( substr( $cards_raw, -1 ) == ';' )
+              $cards_raw = substr( $cards_raw, 0, -1 );
+          if( $cards_raw == '' )
+              $cards = array();
+          else
+              $cards = explode( ';', $cards_raw );
+
+          $this->game->draftCard( $cards );
+          self::ajaxResponse( );
+      }
 
       public function roll()
       {

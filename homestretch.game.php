@@ -45,7 +45,11 @@ class Homestretch extends Table
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
             //      ...
-        ) );        
+        ) );
+
+        $this->cards = self::getNew( "module.common.deck" );
+        $this->cards->init( "card" );
+        $this->racecards = self::getNew( "module.common.deck" );
 	}
 	
     protected function getGameName( )
@@ -71,12 +75,13 @@ class Homestretch extends Table
  
         // Create players
         // Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
-        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
+        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_score) VALUES ";
         $values = array();
         foreach( $players as $player_id => $player )
         {
             $color = array_shift( $default_colors );
-            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."')";
+            $money = 50000;
+            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."', 50000)";
         }
         $sql .= implode( $values, ',' );
         self::DbQuery( $sql );
@@ -110,6 +115,18 @@ class Homestretch extends Table
         }
         $sql .= implode( $values, ',' );
         self::DbQuery( $sql );
+
+        $redcards = array();
+        $bluecards = array();
+
+        for( $value=2; $value<=12; $value++ )   //  2, 3, 4, ... 12
+        {
+            $redcards[] = array( 'type' => 1, 'type_arg' => $value, 'nbr' => 2);
+            $bluecards[] = array( 'type' => 2, 'type_arg' => $value, 'nbr' => 1);
+        }
+
+        $this->cards->createCards( $redcards, 'red' );
+        $this->cards->createCards( $bluecards, 'blue' );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -145,6 +162,9 @@ class Homestretch extends Table
         $result['Positions'] = self::getObjectListFromDB( "SELECT horse, progress
                                                        FROM position" );
 
+        // Cards in player hand
+        $result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
+
         return $result;
     }
 
@@ -173,7 +193,12 @@ class Homestretch extends Table
     /*
         In this space, you can put any utility methods useful for your game logic
     */
-
+    function logToClient($value)
+    {
+        self::notifyAllPlayers( "logging", clienttranslate( 'Logged Message' ), array(
+            'message' => $value,
+        ) );
+    }
     function GetDiceValues()
     {
         $Dice = array();
@@ -233,6 +258,46 @@ class Homestretch extends Table
     }
     
     */
+    function draftCard( $card_ids )
+    {
+        self::checkAction( "draftCard" );
+
+        // !! Here we have to get CURRENT player (= player who send the request) and not
+        //    active player, cause we are in a multiple active player state and the "active player"
+        //    correspond to nothing.
+        $player_id = self::getCurrentPlayerId();
+
+        if( count( $card_ids ) != 1 )
+            throw new feException( self::_("You must take exactly 1 cards") );
+
+        // Check if these cards are in player hands
+        $cards = $this->cards->getCards( $card_ids );
+
+        if( count( $cards ) != 1 )
+            throw new feException( self::_("Some of these cards don't exist") );
+
+        foreach( $cards as $card )
+        {
+            if( $card['location'] != 'hand' || $card['location_arg'] != $player_id )
+                throw new feException( self::_("Some of these cards are not in your hand") );
+        }
+
+
+
+        // Allright, these cards can be given to this player
+        // (note: we place the cards in some temporary location in order he can't see them before the hand starts)
+        $this->cards->moveCards( $card_ids, "temporary", $player_id );
+
+        // Notify the player so we can make these cards disapear
+        self::notifyPlayer( $player_id, "draftCards", "", array(
+            "cards" => $card_ids
+        ) );
+
+        // Make this player unactive now
+        // (and tell the machine state to use transtion "giveCards" if all players are now unactive
+        $this->gamestate->setPlayerNonMultiactive( $player_id, "draftCards" );
+    }
+
     function roll( )
     {
 
@@ -434,7 +499,36 @@ class Homestretch extends Table
         $this->gamestate->nextState( 'some_gamestate_transition' );
     }    
     */
+    function stNewHand()
+    {
 
+        // Take back all cards (from any location => null) to deck
+        $this->cards->moveAllCardsInLocation( 'blue', "deck" );
+        $this->cards->shuffle( 'deck' );
+
+        // Deal 5 cards to each players
+        // Create deck, shuffle it and give 13 initial cards
+        self::logToClient("here");
+        $players = self::loadPlayersBasicInfos();
+//        var_dump('here');
+//        die('ok');
+        foreach( $players as $player_id => $player )
+        {
+            $cards = $this->cards->pickCards( 5, 'deck', 'draft_'.$player_id );
+
+            self::logToClient($cards);
+            // Notify player about his cards
+            self::notifyPlayer( $player_id, 'newHand', '', array(
+                'cards' => $cards
+            ) );
+        }
+
+        $this->gamestate->nextState( "" );
+    }
+    function stdraftCard()
+    {
+        $this->gamestate->setAllPlayersMultiactive();
+    }
     function stNewDice()
     {
         // TODO not shuffle the card but do a simple cut

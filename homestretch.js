@@ -18,7 +18,8 @@
 define([
     "dojo","dojo/_base/declare",
     "ebg/core/gamegui",
-    "ebg/counter"
+    "ebg/counter",
+    "ebg/stock"
 ],
 function (dojo, declare) {
     return declare("bgagame.homestretch", ebg.core.gamegui, {
@@ -28,6 +29,9 @@ function (dojo, declare) {
             // Here, you can init the global variables of your user interface
             // Example:
             // this.myGlobalValue = 0;
+            this.playerHand = null;
+            this.cardwidth = 206;
+            this.cardheight = 286
 
         },
         
@@ -69,6 +73,37 @@ function (dojo, declare) {
                 var pos = this.gamedatas.Positions[i];
                 console.log(pos)
                 this.UpdatePositions( parseInt( i ) + 2, parseInt( pos.progress ) );
+            }
+
+            // Player hand
+            this.playerHand = new ebg.stock();
+            this.playerHand.create( this, $('myhand'), this.cardwidth, this.cardheight );
+            this.playerHand.image_items_per_row = 11;
+            // dojo.connect( this.playerHand, 'onChangeSelection', this, 'onPlayerHandSelectionChanged' );
+
+            // Create cards types:
+            for( var value=2;value<=12;value++ )
+            {
+                // Build card type id
+                var card_type_id = this.getCardUniqueId( 1, value );
+                console.log('addItemType')
+                console.log(card_type_id)
+                console.log(value)
+                this.playerHand.addItemType( card_type_id, value, g_gamethemeurl+'img/horse_cards.png', value - 2 );
+            }
+
+            // Cards in player's hand
+            console.log(this.gamedatas.hand)
+            for( var i in this.gamedatas.hand )
+            {
+                var card = this.gamedatas.hand[i];
+                var color = card.type;
+                var value = card.type_arg;
+                console.log(color)
+                console.log(value)
+                console.log(this.getCardUniqueId( 1, value ))
+                this.playerHand.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
+                console.log('not here')
             }
  
             // Setup game notifications to handle (see "setupNotifications" method below)
@@ -223,7 +258,12 @@ function (dojo, declare) {
             {            
                 switch( stateName )
                 {
-/*               
+                    case 'draftCards':
+                        console.log('adding Take card button')
+                        this.addActionButton( 'giveCards_button', _('Take selected card'), 'onDraftCard' );
+                        break;
+
+/*
                  Example:
  
                  case 'myGameState':
@@ -248,6 +288,10 @@ function (dojo, declare) {
             script.
         
         */
+        getCardUniqueId: function( color, value )
+        {
+            return parseInt(color)*13+parseInt(value);
+        },
         UpdatePositions: function( HorseId, value )
         {
             //var x =  (value-1) *71;
@@ -379,7 +423,25 @@ function (dojo, declare) {
         },        
         
         */
+        onDraftCard: function()
+        {
+            if( this.checkAction( 'draftCard' ) )
+            {
+                var items = this.playerHand.getSelectedItems();
 
+                if( items.length != 1 )
+                {
+                    this.showMessage( _("You must select exactly 1 card"), 'error' );
+                    return;
+                }
+
+                // Take this card
+                var to_take = '';
+                to_take += items[0].id+';';
+                this.ajaxcall( "/homestretch/homestretch/draftCard.html", { cards: to_take, lock: true }, this, function( result ) {
+                }, function( is_error) { } );
+            }
+        },
         
         ///////////////////////////////////////////////////
         //// Reaction to cometD notifications
@@ -408,10 +470,28 @@ function (dojo, declare) {
             // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
             // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
             //
+            dojo.subscribe( 'newHand', this, "notif_newHand" );
             dojo.subscribe( 'newDice', this, "notif_newDice" );
-        },  
+            dojo.subscribe( 'logging', this, "notif_logging" );
+        },
         
         // TODO: from this point and below, you can write your game notifications handling methods
+
+        notif_newHand: function( notif )
+        {
+            // We received a new full hand of 5 cards.
+            this.playerHand.removeAll();
+            console.log('notif_newHand');
+            console.log(notif.args.cards);
+            for( var i in notif.args.cards )
+            {
+                var card = notif.args.cards[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.playerHand.addToStockWithId( this.getCardUniqueId( color, value ), card.id );
+            }
+        },
+
         notif_newDice: function( notif )
         {
             console.log('notif_newDice')
@@ -485,7 +565,11 @@ function (dojo, declare) {
             // dojo.query("#move_horse_btn").connect(  'onclick', this, 'onMoveHorse' );
             // dojo.query("#reroll_btn").connect(  'onclick', this, 'onReRoll' );
         },
-
+        notif_logging: function( notif )
+        {
+            console.log('notif_logging')
+            console.log(notif)
+        },
         /*
         Example:
         
