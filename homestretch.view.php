@@ -53,6 +53,7 @@
         }
 
         $this->tpl['MY_HAND'] = self::_("My hand");
+        $this->tpl['DRAFT_CARD'] = self::_("Draft cards");
         /*
         
         // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}

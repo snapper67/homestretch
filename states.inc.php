@@ -90,6 +90,14 @@ $machinestates = array(
         "possibleactions" => array( "draftCard" ),
         "transitions" => array( "draftCard" => 22, "skip" => 22 )
     ),
+    22 => array(
+        "name" => "tradeHands",
+        "description" => "",
+        "type" => "game",
+        "action" => "stTradeHands",
+        "possibleactions" => array( "reDraft", "skip" ),
+        "transitions" => array( "reDraft" => 21, "skip" => 30  )
+    ),
     30 => array(
         "name" => "newDice",
         "description" => "",

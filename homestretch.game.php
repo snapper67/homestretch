@@ -164,6 +164,7 @@ class Homestretch extends Table
 
         // Cards in player hand
         $result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
+        $result['draft'] = $this->cards->getCardsInLocation( 'draft', $current_player_id );
 
         return $result;
     }
@@ -274,28 +275,30 @@ class Homestretch extends Table
         $cards = $this->cards->getCards( $card_ids );
 
         if( count( $cards ) != 1 )
-            throw new feException( self::_("Some of these cards don't exist") );
+            throw new feException( self::_("1Some of these cards don't exist") );
 
-        foreach( $cards as $card )
-        {
-            if( $card['location'] != 'hand' || $card['location_arg'] != $player_id )
-                throw new feException( self::_("Some of these cards are not in your hand") );
-        }
+//        foreach( $cards as $card )
+//        {
+//            if( $card['location'] != 'hand' || $card['location_arg'] != $player_id )
+//                throw new feException( self::_("2Some of these cards are not in your hand") );
+//        }
 
 
 
         // Allright, these cards can be given to this player
         // (note: we place the cards in some temporary location in order he can't see them before the hand starts)
-        $this->cards->moveCards( $card_ids, "temporary", $player_id );
-
+        $this->cards->moveCards( $card_ids, "hand", $player_id );
+        $cards = $this->cards->getPlayerHand($player_id);
+        $draft_cards = $this->cards->getCardsInLocation('draft', $player_id);
         // Notify the player so we can make these cards disapear
         self::notifyPlayer( $player_id, "draftCards", "", array(
-            "cards" => $card_ids
+            "hand" => $cards,
+            "draft" => $draft_cards
         ) );
 
         // Make this player unactive now
         // (and tell the machine state to use transtion "giveCards" if all players are now unactive
-        $this->gamestate->setPlayerNonMultiactive( $player_id, "draftCards" );
+        $this->gamestate->setPlayerNonMultiactive( $player_id, "draftCard" );
     }
 
     function roll( )
@@ -514,12 +517,12 @@ class Homestretch extends Table
 //        die('ok');
         foreach( $players as $player_id => $player )
         {
-            $cards = $this->cards->pickCards( 5, 'deck', 'draft_'.$player_id );
+            $cards = $this->cards->pickCardsForLocation( 5, 'deck', 'draft', $player_id );
 
-            self::logToClient($cards);
+            self::logToClient("loading Cards");
             // Notify player about his cards
             self::notifyPlayer( $player_id, 'newHand', '', array(
-                'cards' => $cards
+                'draft' => $cards
             ) );
         }
 
@@ -528,6 +531,39 @@ class Homestretch extends Table
     function stdraftCard()
     {
         $this->gamestate->setAllPlayersMultiactive();
+    }
+
+    /*
+
+    function stTradeHands()
+    {
+        Swap Hands between players
+    }
+    */
+    function stTradeHands()
+    {
+        $players = self::loadPlayersBasicInfos();
+        end($players);
+        $last_player = key($players);
+        $this->cards->moveAllCardsInLocation( 'draft', "temporary", $last_player, 0  );
+        foreach( $players as $player_id => $player )
+        {
+            $this->cards->moveAllCardsInLocation( 'temporary', "staging" );
+            $this->cards->moveAllCardsInLocation( 'draft', "temporary", $player_id, 0  );
+            $cards = $this->cards->moveAllCardsInLocation( 'staging', "draft", null, $player_id  );
+
+            // Notify player about his cards
+            self::notifyPlayer( $player_id, 'nextHand', '', array(
+                'draft' => $this->cards->getCardsInLocation( 'draft', $player_id )
+            ) );
+        }
+        self::logToClient("Testing card count");
+        if ($this->cards->countCardInLocation('draft') > 0)
+        {
+            $this->gamestate->nextState( "reDraft" );
+        } else {
+            $this->gamestate->nextState("skip");
+        }
     }
     function stNewDice()
     {
@@ -554,8 +590,11 @@ class Homestretch extends Table
             'player_name' => self::getActivePlayerName(),
             'Dices'=> $Dice,
             'Revived' => array(),
+            'Positions' => self::getObjectListFromDB( "SELECT horse, progress
+                                                       FROM position" ),
             'Launch' => 0,
-            'values' => implode( ' / ', $Dice )
+            'values' => implode( ' / ', $Dice ),
+            'Total' => self::getGameStateValue( 'dice_total', 0 ),
         ) );
 
         $this->gamestate->nextState( "" );

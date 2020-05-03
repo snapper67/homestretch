@@ -30,6 +30,7 @@ function (dojo, declare) {
             // Example:
             // this.myGlobalValue = 0;
             this.playerHand = null;
+            this.playerDraft = null;
             this.cardwidth = 206;
             this.cardheight = 286
 
@@ -79,6 +80,10 @@ function (dojo, declare) {
             this.playerHand = new ebg.stock();
             this.playerHand.create( this, $('myhand'), this.cardwidth, this.cardheight );
             this.playerHand.image_items_per_row = 11;
+
+            this.playerDraft = new ebg.stock();
+            this.playerDraft.create( this, $('mydraft'), this.cardwidth, this.cardheight );
+            this.playerDraft.image_items_per_row = 11;
             // dojo.connect( this.playerHand, 'onChangeSelection', this, 'onPlayerHandSelectionChanged' );
 
             // Create cards types:
@@ -87,23 +92,29 @@ function (dojo, declare) {
                 // Build card type id
                 var card_type_id = this.getCardUniqueId( 1, value );
                 console.log('addItemType')
-                console.log(card_type_id)
-                console.log(value)
                 this.playerHand.addItemType( card_type_id, value, g_gamethemeurl+'img/horse_cards.png', value - 2 );
+                this.playerDraft.addItemType( card_type_id, value, g_gamethemeurl+'img/horse_cards.png', value - 2 );
             }
 
             // Cards in player's hand
-            console.log(this.gamedatas.hand)
+            console.log( "Building Hands" );
+            console.log(this.gamedatas.hand);
             for( var i in this.gamedatas.hand )
             {
                 var card = this.gamedatas.hand[i];
                 var color = card.type;
                 var value = card.type_arg;
-                console.log(color)
-                console.log(value)
-                console.log(this.getCardUniqueId( 1, value ))
                 this.playerHand.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
-                console.log('not here')
+                console.log('hand here');
+            }
+            console.log(this.gamedatas.draft);
+            for( var i in this.gamedatas.draft )
+            {
+                var card = this.gamedatas.draft[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.playerDraft.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
+                console.log('draft here')
             }
  
             // Setup game notifications to handle (see "setupNotifications" method below)
@@ -427,7 +438,7 @@ function (dojo, declare) {
         {
             if( this.checkAction( 'draftCard' ) )
             {
-                var items = this.playerHand.getSelectedItems();
+                var items = this.playerDraft.getSelectedItems();
 
                 if( items.length != 1 )
                 {
@@ -471,8 +482,11 @@ function (dojo, declare) {
             // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
             //
             dojo.subscribe( 'newHand', this, "notif_newHand" );
+            dojo.subscribe( 'nextHand', this, "notif_nextHand" );
+            dojo.subscribe( 'draftCards', this, "notif_draftCard" );
             dojo.subscribe( 'newDice', this, "notif_newDice" );
             dojo.subscribe( 'logging', this, "notif_logging" );
+            console.log('setupNotifications end');
         },
         
         // TODO: from this point and below, you can write your game notifications handling methods
@@ -480,16 +494,59 @@ function (dojo, declare) {
         notif_newHand: function( notif )
         {
             // We received a new full hand of 5 cards.
-            this.playerHand.removeAll();
+            this.playerDraft.removeAll();
             console.log('notif_newHand');
-            console.log(notif.args.cards);
-            for( var i in notif.args.cards )
+            console.log(notif.args.draft);
+            for( var i in notif.args.draft )
             {
-                var card = notif.args.cards[i];
+                var card = notif.args.draft[i];
                 var color = card.type;
                 var value = card.type_arg;
-                this.playerHand.addToStockWithId( this.getCardUniqueId( color, value ), card.id );
+                this.playerDraft.addToStockWithId( this.getCardUniqueId( color, value ), card.id );
             }
+        },
+        notif_nextHand: function( notif )
+        {
+            // We received a new full hand of 5 cards.
+            this.playerDraft.removeAll();
+            console.log('notif_nextHand');
+            console.log(notif.args.draft);
+            for( var i in notif.args.draft )
+            {
+                var card = notif.args.draft[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.playerDraft.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
+            }
+            console.log('notif_nextHand end');
+        },
+
+        notif_draftCard: function( notif )
+        {
+            console.log('notif_draftCard');
+            // We received a new full hand of 5 cards.
+            this.playerHand.removeAll();
+            console.log('Hand');
+            console.log(notif.args.hand);
+            for( var i in notif.args.hand )
+            {
+                var card = notif.args.hand[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.playerHand.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
+            }
+
+            console.log('Draft Cards');
+            console.log(notif.args.draft);
+            this.playerDraft.removeAll();
+            for( var i in notif.args.draft )
+            {
+                var card = notif.args.draft[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.playerDraft.addToStockWithId( this.getCardUniqueId( 1, value ), card.id );
+            }
+            console.log('notif_draftCard end');
         },
 
         notif_newDice: function( notif )
@@ -552,8 +609,9 @@ function (dojo, declare) {
                 pos = notif.args.Positions[prev - 2];
                 this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
             }
-            if (notif.args.Launch != 1) {
+            if (notif.args.Launch != 1 && sum > 0) {
                 // We are using 2 -12 so offset the array
+                console.log('Moving ' + sum + ' two steps')
                 pos = notif.args.Positions[sum - 2];
                 this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
             }
@@ -567,8 +625,8 @@ function (dojo, declare) {
         },
         notif_logging: function( notif )
         {
-            console.log('notif_logging')
-            console.log(notif)
+            console.log('notif_logging');
+            console.log(notif);
         },
         /*
         Example:

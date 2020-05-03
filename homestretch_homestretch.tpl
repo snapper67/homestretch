@@ -62,7 +62,11 @@
     <div id="myhand">
     </div>
 </div>
-
+<div id="myhand_wrap" class="whiteblock">
+    <h3>{DRAFT_CARD}</h3>
+    <div id="mydraft">
+    </div>
+</div>
 
 
 <script type="text/javascript">
