@@ -57,10 +57,13 @@ CREATE TABLE IF NOT EXISTS `horsecards` (
 -- Wager, Handicap, score markers
 
 CREATE TABLE IF NOT EXISTS `token` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `token_key` varchar(32) NOT NULL,
   `token_location` varchar(32) NOT NULL,
   `token_state` int(10),
-  PRIMARY KEY (`token_key`)
+  `token_owner` int(10),
+  `token_value` int(10),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `position` (
@@ -68,6 +71,7 @@ CREATE TABLE IF NOT EXISTS `position` (
    `horse` tinyint(2) unsigned NOT NULL,
    `progress` tinyint(2) unsigned NOT NULL,
    `stone_color` varchar(8) NULL,
+   `modifier` tinyint(2) unsigned NULL,
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

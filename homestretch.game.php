@@ -76,18 +76,36 @@ class Homestretch extends Table
         // Create players
         // Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
         $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_score) VALUES ";
+        $token_sql = "INSERT INTO token (token_state, token_owner, token_location, token_value) VALUES ";
         $values = array();
         foreach( $players as $player_id => $player )
         {
             $color = array_shift( $default_colors );
             $money = 50000;
             $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."', 50000)";
+            $token_values[] = "(0,".$player_id.",'hand', 1)";
+            $token_values[] = "(0,".$player_id.",'hand', 1)";
+            $token_values[] = "(0,".$player_id.",'hand', 2)";
+            $token_values[] = "(0,".$player_id.",'hand', 2)";
+            $token_values[] = "(0,".$player_id.",'hand', 3)";
         }
         $sql .= implode( $values, ',' );
         self::DbQuery( $sql );
         self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         self::reloadPlayersBasicInfos();
-        
+
+        $token_values[] = "(0,0,'board', -1)";
+        $token_values[] = "(0,0,'board', -1)";
+        $token_values[] = "(0,0,'board', -1)";
+        $token_values[] = "(0,0,'board', -2)";
+        $token_values[] = "(0,0,'board', -2)";
+        $token_values[] = "(0,0,'board', 4)";
+        $token_values[] = "(0,0,'board', 4)";
+        $token_values[] = "(0,0,'board', 6)";
+        $token_values[] = "(0,0,'board', 6)";
+        $query_sql = $token_sql.implode( $token_values, ',' );
+        self::DbQuery( $query_sql );
+//        self::DbQuery( $query_sql );
         /************ Start the game initialization *****/
 
         // Init global values with their initial values
@@ -127,6 +145,14 @@ class Homestretch extends Table
 
         $this->cards->createCards( $redcards, 'red' );
         $this->cards->createCards( $bluecards, 'blue' );
+
+        for( $value=1; $value<=8; $value++ )   //  1-8
+        {
+            $race[] = array( 'type' => 3, 'type_arg' => $value, 'nbr' => 1);
+//            $bluecards[] = array( 'type' => 2, 'type_arg' => $value, 'nbr' => 1);
+        }
+        $this->cards->createCards( $race, 'purple' );
+        $this->cards->pickCardsForLocation( 2, 'purple', 'board' );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();

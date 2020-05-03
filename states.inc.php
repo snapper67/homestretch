@@ -96,25 +96,33 @@ $machinestates = array(
         "type" => "game",
         "action" => "stTradeHands",
         "possibleactions" => array( "reDraft", "skip" ),
-        "transitions" => array( "reDraft" => 21, "skip" => 30  )
+        "transitions" => array( "reDraft" => 21, "skip" => 40  )
     ),
     30 => array(
+        "name" => "raceSetup",
+        "description" => "",
+        "type" => "game",
+        "action" => "stRaceSetup",
+        "possibleactions" => array( "skip" ),
+        "transitions" => array( "skip" => 40  )
+    ),
+    40 => array(
         "name" => "newDice",
         "description" => "",
         "type" => "game",
         "action" => "stNewDice",
         "updateGameProgression" => true,
-        "transitions" => array( "" => 33 )
+        "transitions" => array( "" => 43 )
     ),
-    33 => array(
+    43 => array(
         "name" => "playerTurnBegin",
         "description" => clienttranslate('${actplayer} must roll the dice'),
         "descriptionmyturn" => clienttranslate('${you} must roll the dice'),
         "type" => "activeplayer",
         "possibleactions" => array( "rollDice" ),
-        "transitions" => array( "rollDice" => 36 )
+        "transitions" => array( "rollDice" => 46 )
     ),
-    36 => array(
+    46 => array(
         "name" => "playerTurnChoose",
         "description" => clienttranslate('${actplayer} must choose an option'),
         "descriptionmyturn" => clienttranslate('${you} must choose an option'),
