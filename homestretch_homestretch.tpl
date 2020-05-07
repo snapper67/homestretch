@@ -41,15 +41,24 @@
     </div>
 
 </div>
+<div id="racecard_wrap" class="">
+    <div id="raceCard">
+    </div>
+</div>
 <div id="board">
 
     <div id="discs">
-        <div class="token blue_token"></div>
-        <div class="token green_token"></div>
-        <div class="token yellow_token"></div>
-        <div class="token orange_token"></div>
-        <div class="token black_token"></div>
-        <div class="token red_token"></div>
+        <div class="disc blue_token"></div>
+        <div class="disc green_token"></div>
+        <div class="disc yellow_token"></div>
+        <div class="disc orange_token"></div>
+        <div class="disc black_token"></div>
+        <div class="disc red_token"></div>
+    </div>
+    <div class="tokenBlock" id="tokenBlock">
+        <!-- BEGIN token -->
+        <div class="token token_{TOKEN_VALUE} tok_0"  id="token_{TOKEN_VALUE}" ></div>
+        <!-- END token -->
     </div>
     <div class="gateBlock" id="gateBlock">
         <!-- BEGIN gate -->

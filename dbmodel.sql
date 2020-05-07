@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `position` (
    `horse` tinyint(2) unsigned NOT NULL,
    `progress` tinyint(2) unsigned NOT NULL,
    `stone_color` varchar(8) NULL,
-   `modifier` tinyint(2) unsigned NULL,
+   `modifier` tinyint(2) NOT NULL DEFAULT '-1',
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

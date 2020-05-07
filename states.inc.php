@@ -77,7 +77,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stNewHand",
         "updateGameProgression" => true,
-        "transitions" => array( "" => 21 )
+        "transitions" => array( "" => 30 )
     ),
 
     21 => array(
@@ -96,7 +96,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stTradeHands",
         "possibleactions" => array( "reDraft", "skip" ),
-        "transitions" => array( "reDraft" => 21, "skip" => 40  )
+        "transitions" => array( "reDraft" => 21, "skip" => 30  )
     ),
     30 => array(
         "name" => "raceSetup",
@@ -144,7 +144,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stEndCheck",
         "updateGameProgression" => true,
-        "transitions" => array( "nextplayer" => 30, "endGame" => 99 )
+        "transitions" => array( "nextplayer" => 40, "endGame" => 99 )
     ),
 
     /*

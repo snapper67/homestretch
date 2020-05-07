@@ -31,9 +31,9 @@ function (dojo, declare) {
             // this.myGlobalValue = 0;
             this.playerHand = null;
             this.playerDraft = null;
-            this.cardwidth = 206;
-            this.cardheight = 286
-
+            this.cardwidth = 207;
+            this.cardheight = 286;
+            this.tokenWidth = 100;
         },
         
         /*
@@ -74,6 +74,40 @@ function (dojo, declare) {
                 var pos = this.gamedatas.Positions[i];
                 console.log(pos)
                 this.UpdatePositions( parseInt( i ) + 2, parseInt( pos.progress ) );
+                this.UpdateHandicap( pos );
+
+            }
+            // addItemType( type, weight, image, image_position ):
+            // this.token = new ebg.stock();
+            // this.token.create( this, $('tokenBlock'), this.tokenWidth, this.tokenWidth );
+            // this.token.image_items_per_row = 5;
+            //
+            // this.token.addItemType( 1, 2, g_gamethemeurl+'img/race_cards.png', value );
+
+            this.races = new ebg.stock();
+            this.races.create( this, $('raceCard'), this.cardwidth, this.cardheight );
+            this.races.image_items_per_row = 6;
+            for( var value=1;value<=12;value++ )
+            {
+                // Build card type id
+                console.log('addItemType')
+                this.races.addItemType( value, 2, g_gamethemeurl+'img/race_cards.png', value - 1 );
+
+            }
+            this.races.addItemType( 13, 1, g_gamethemeurl+'img/race_back_cards.png', 1 );
+            if (this.gamedatas.race.length != 0) {
+                for( var i in this.gamedatas.race )
+                {
+
+                    var card = this.gamedatas.race[i];
+                    console.log(card);
+                    var value = card.type_arg;
+                    this.races.addToStockWithId( value, card.id );
+                    console.log('race hand here');
+                    this.races.addToStockWithId(13, 0)
+                }
+            } else {
+                this.races.addToStockWithId(13, 0)
             }
 
             // Player hand
@@ -303,6 +337,7 @@ function (dojo, declare) {
         {
             return parseInt(color)*13+parseInt(value);
         },
+
         UpdatePositions: function( HorseId, value )
         {
             //var x =  (value-1) *71;
@@ -310,6 +345,18 @@ function (dojo, declare) {
             console.log('Updating ' + HorseId + ' and value ' + value)
             dojo.removeClass( 'horse_'+HorseId, ['pos_0','pos_1','pos_2','pos_3','pos_4','pos_5','pos_6','pos_7','pos_0','pos_9','pos_10','pos_11','pos_12'] );
             dojo.addClass( 'horse_'+HorseId, sDiceClass );
+        },
+
+        UpdateHandicap: function( pos )
+        {
+            console.log('Updating ' + pos.horse + ' and value ' + pos.modifier)
+            if (pos.modifier) {
+                var sDiceClass =  "tok_"+(pos.modifier).toString();
+                dojo.removeClass( 'token_'+pos.horse, ['tok_0','tok_1','tok_2','tok_3','tok_4','tok_5','tok_6','tok_7','tok_0','tok_9','tok_10','tok_11','tok_12'] );
+                dojo.addClass( 'token_'+pos.horse, sDiceClass );
+            } else {
+                dojo.removeClass( 'token_'+pos.horse, ['tok_0','tok_1','tok_2','tok_3','tok_4','tok_5','tok_6','tok_7','tok_0','tok_9','tok_10','tok_11','tok_12'] );
+            }
         },
 
         UpdateDice: function( DiceId, value )
@@ -608,12 +655,14 @@ function (dojo, declare) {
                 console.log('Moving ' + prev + ' one step')
                 pos = notif.args.Positions[prev - 2];
                 this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
+                this.UpdateHandicap( pos );
             }
             if (notif.args.Launch != 1 && sum > 0) {
                 // We are using 2 -12 so offset the array
                 console.log('Moving ' + sum + ' two steps')
                 pos = notif.args.Positions[sum - 2];
                 this.UpdatePositions(parseInt(pos.horse), parseInt(pos.progress));
+                this.UpdateHandicap( pos );
             }
 
             this.UpdateDiceBtn( notif.args.Launch );

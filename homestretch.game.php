@@ -50,6 +50,7 @@ class Homestretch extends Table
         $this->cards = self::getNew( "module.common.deck" );
         $this->cards->init( "card" );
         $this->racecards = self::getNew( "module.common.deck" );
+        $this->cards->init( "card" );
 	}
 	
     protected function getGameName( )
@@ -94,6 +95,7 @@ class Homestretch extends Table
         self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         self::reloadPlayersBasicInfos();
 
+        // Create tokens
         $token_values[] = "(0,0,'board', -1)";
         $token_values[] = "(0,0,'board', -1)";
         $token_values[] = "(0,0,'board', -1)";
@@ -125,7 +127,8 @@ class Homestretch extends Table
         self::setGameStateInitialValue( 'dice_launch', 0 );
         self::setGameStateInitialValue( 'actual_turn', 0 );
 
-        // Insert (empty) intersections into database
+        // Set Up positions table
+        // Tracks horse locations and handicaps
         $sql = "INSERT INTO position (horse, progress) VALUES ";
         $values = array();
         for ($x = 2; $x <= 12; $x++) {
@@ -134,6 +137,9 @@ class Homestretch extends Table
         $sql .= implode( $values, ',' );
         self::DbQuery( $sql );
 
+
+        // Set Up Horse Cards
+        // Used in card drafting to establish shares of a horse
         $redcards = array();
         $bluecards = array();
 
@@ -146,13 +152,16 @@ class Homestretch extends Table
         $this->cards->createCards( $redcards, 'red' );
         $this->cards->createCards( $bluecards, 'blue' );
 
-        for( $value=1; $value<=8; $value++ )   //  1-8
+
+        // Set Up Purple Race Cards
+        // Two are selected to establish the race paramenters
+        for( $value=1; $value<=12; $value++ )   //  1-12
         {
             $race[] = array( 'type' => 3, 'type_arg' => $value, 'nbr' => 1);
 //            $bluecards[] = array( 'type' => 2, 'type_arg' => $value, 'nbr' => 1);
         }
         $this->cards->createCards( $race, 'purple' );
-        $this->cards->pickCardsForLocation( 2, 'purple', 'board' );
+//        $this->cards->pickCardsForLocation( 2, 'purple', 'board' );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -185,12 +194,13 @@ class Homestretch extends Table
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
 
         // Get horse positions
-        $result['Positions'] = self::getObjectListFromDB( "SELECT horse, progress
+        $result['Positions'] = self::getObjectListFromDB( "SELECT horse, progress, modifier
                                                        FROM position" );
 
         // Cards in player hand
         $result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
         $result['draft'] = $this->cards->getCardsInLocation( 'draft', $current_player_id );
+        $result['race'] = $this->cards->getCardsInLocation( 'board' );
 
         return $result;
     }
@@ -226,6 +236,7 @@ class Homestretch extends Table
             'message' => $value,
         ) );
     }
+
     function GetDiceValues()
     {
         $Dice = array();
@@ -249,6 +260,29 @@ class Homestretch extends Table
             $nPoints += $dice;
         }
         return $nPoints;
+    }
+
+    function calculateMovement ($die_total, $progress = 2)
+    {
+        $Positions = self::getObjectListFromDB( "SELECT horse, progress, modifier
+                                                           FROM position WHERE horse=" . $die_total );
+
+        foreach( $Positions as $position ) {
+
+            if ($position['modifier'] >= 0) {
+                switch ( $position['modifier'] ) {
+                    case 0:
+                        $progress = 0;
+                        break;
+                    default:
+                        $progress = 2 + $position['modifier'];
+                }
+            }
+        }
+        $sql = "UPDATE position SET progress=progress+" . $progress . ", modifier=-1 
+                    WHERE horse=" . $die_total;
+        self::DbQuery( $sql );
+
     }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -398,9 +432,10 @@ class Homestretch extends Table
 
 //        Record the single movement on a re roll
         $old_die_total = self::getGameStateValue( 'dice_total', 0 );
-        $sql = "UPDATE position SET progress=progress+1
-                    WHERE horse=" . $old_die_total;
-        self::DbQuery( $sql );
+        self::calculateMovement($old_die_total, 1);
+//        $sql = "UPDATE position SET progress=progress+1
+//                    WHERE horse=" . $old_die_total;
+//        self::DbQuery( $sql );
 
         for( $i=1; $i<=$this->DiceCount; $i++ )
         {
@@ -423,9 +458,10 @@ class Homestretch extends Table
         }
 
         // Record the movement on the new dice
-        $sql = "UPDATE position SET progress=progress+2
-                    WHERE horse=" . $die_total;
-        self::DbQuery( $sql );
+        self::calculateMovement($die_total, 2);
+//        $sql = "UPDATE position SET progress=progress+2
+//                    WHERE horse=" . $die_total;
+//        self::DbQuery( $sql );
 
         self::setGameStateValue( 'dice_launch', 0 );
         self::setGameStateValue( 'dice_total', $die_total );
@@ -457,9 +493,27 @@ class Homestretch extends Table
 
         $die_total = self::getGameStateValue( 'dice_total', 0 );
 
-        $sql = "UPDATE position SET progress=progress+2
-                    WHERE horse=" . $die_total;
-        self::DbQuery( $sql );
+        self::calculateMovement($die_total);
+//        $Positions = self::getObjectListFromDB( "SELECT horse, progress, modifier
+//                                                       FROM position WHERE horse=" . $die_total );
+//
+//        $progress = 2;
+//        foreach( $Positions as $position ) {
+//
+//            if ($position['modifier'] >= 0) {
+//                switch ( $position['modifier'] ) {
+//                    case 0:
+//                        $progress = 0;
+//                        break;
+//                    default:
+//                        $progress = 2 + $position['modifier'];
+//                }
+//            }
+//        }
+//
+//        $sql = "UPDATE position SET progress=progress+" . $progress . ", modifier=-1
+//                    WHERE horse=" . $die_total;
+//        self::DbQuery( $sql );
 
         $nLaunch = 0;
         self::setGameStateValue( 'dice_launch', $nLaunch );
@@ -554,18 +608,12 @@ class Homestretch extends Table
 
         $this->gamestate->nextState( "" );
     }
+
     function stdraftCard()
     {
         $this->gamestate->setAllPlayersMultiactive();
     }
 
-    /*
-
-    function stTradeHands()
-    {
-        Swap Hands between players
-    }
-    */
     function stTradeHands()
     {
         $players = self::loadPlayersBasicInfos();
@@ -591,6 +639,29 @@ class Homestretch extends Table
             $this->gamestate->nextState("skip");
         }
     }
+
+    function stRaceSetup()
+    {
+        $this->cards->pickCardsForLocation( 1, 'purple', 'board' );
+        $card = $this->cards->getCardOnTop('board');
+        $card_id = $this->race_cards[intval($card['type_arg'])];
+//        var_dump($card_id);
+//        die('ok');
+        // Add Handdicap Tokens
+        self::DbQuery('UPDATE position Set modifier=0 WHERE horse='.intval($card_id['handicap_x1']));
+        self::DbQuery('UPDATE position Set modifier=0 WHERE horse='.intval($card_id['handicap_x2']));
+        self::DbQuery('UPDATE position Set modifier=0 WHERE horse='.intval($card_id['handicap_x3']));
+        self::DbQuery('UPDATE position Set modifier=2 WHERE horse='.intval($card_id['minus_two1']));
+        self::DbQuery('UPDATE position Set modifier=2 WHERE horse='.intval($card_id['minus_two2']));
+        self::DbQuery('UPDATE position Set modifier=4 WHERE horse='.intval($card_id['plus_four1']));
+        self::DbQuery('UPDATE position Set modifier=4 WHERE horse='.intval($card_id['plus_four2']));
+        self::DbQuery('UPDATE position Set modifier=6 WHERE horse='.intval($card_id['plus_six1']));
+        self::DbQuery('UPDATE position Set modifier=6 WHERE horse='.intval($card_id['plus_six2']));
+
+
+        $this->gamestate->nextState("skip");
+    }
+
     function stNewDice()
     {
         // TODO not shuffle the card but do a simple cut

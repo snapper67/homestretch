@@ -52,8 +52,15 @@
             $this->page->insert_block( "gate", array( "GATE_VALUE" => $i ) );
         }
 
+        $this->page->begin_block( "homestretch_homestretch", "token" );
+        for( $i=2; $i<=12; $i++ )
+        {
+            $this->page->insert_block( "token", array( "TOKEN_VALUE" => $i ) );
+        }
+
         $this->tpl['MY_HAND'] = self::_("My hand");
         $this->tpl['DRAFT_CARD'] = self::_("Draft cards");
+        $this->tpl['RACE_CARD'] = self::_("Race cards");
         /*
         
         // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}
